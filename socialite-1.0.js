@@ -37,10 +37,8 @@ window.Socialite = (function()
 	{
 		var i, attr = from.attributes;
 		for (i = 0; i < attr.length; i++) {
-			if (attr[i].name.indexOf('data-') === 0) {
-				if (attr[i].value.length) {
-					to.setAttribute(attr[i].name, attr[i].value);
-				}
+			if (attr[i].name.indexOf('data-') === 0 && attr[i].value.length) {
+				to.setAttribute(attr[i].name, attr[i].value);
 			}
 		}
 	};
@@ -50,14 +48,14 @@ window.Socialite = (function()
 	{
 		var i, str = '', attr = from.attributes;
 		for (i = 0; i < attr.length; i++) {
-			if (attr[i].name.indexOf('data-') === 0) {
+			if (attr[i].name.indexOf('data-') === 0 && attr[i].value.length) {
 				str += encodeURIComponent(attr[i].name) + '=' + encodeURIComponent(attr[i].value) + '&';
 			}
 		}
 		return str;
 	};
 
-	/* get elements within context with a specific class name (with fallback for IE < 9) */
+	/* get elements within context with a class name (with fallback for IE < 9) */
 	_socialite.getElements = function(context, name)
 	{
 		if (typeof context.getElementsByClassName === 'function') {
@@ -73,7 +71,7 @@ window.Socialite = (function()
 		return elems;
 	}
 
-	// no event support yet...
+	// no event support yet... ignore me!
 	_socialite.createEvent = function(name, elem)
 	{
 		var e = document.createEvent('Event');
@@ -81,8 +79,7 @@ window.Socialite = (function()
 		elem.dispatchEvent(e);
 	};
 
-	// return an iframe element
-	// do iframes need width and height?
+	// return an iframe element - do iframes need width and height?...
 	_socialite.createIFrame = function(src)
 	{
 		var iframe = document.createElement('iframe');
