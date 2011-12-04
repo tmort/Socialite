@@ -3,11 +3,23 @@ Copyright © 2012
 
 # Socialite
 
-## Because if you're selling your soul, you may as well do it asynchronously.
+### Because if you're selling your soul, you may as well do it asynchronously.
 
-Socialite provides a very easy way to implement and activate a plethora of social sharing buttons at any time you wish.
+Socialite provides a very easy way to implement and activate a plethora of social sharing buttons — any time you wish, on document load, on article hover, on any event!
 
-### Functions
+[For a demo and documentation visit: socialitejs.com](http://www.socialitejs.com/)
+
+## Features and Benefits
+
+* Less than 2kb when minified and compressed.
+* Lazy loading.
+* More accessible and styleable defaults/fallbacks.
+* Built in support for Twitter, Google+, Facebook and LinkedIn.
+* Easily extendable with other social networks.
+
+## Functions
+
+### Load
 
 	Socialite.load();
 
@@ -17,9 +29,13 @@ Socialite provides a very easy way to implement and activate a plethora of socia
 
 Be kind! Provide an element to search within using `context` rather than the whole document.
 
+### Activate
+
 	Socialite.activate(element, 'network');
 
 `activate` replaces a single element (or an array of) with the specific social network button. The following are built in by default: `twitter`, `plusone`, `facebook`, `linkedin`.
+
+### Extend
 
 	Socialite.extend('network', function);
 
