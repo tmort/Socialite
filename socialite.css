@@ -1,0 +1,12 @@
+.cf:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+* html .cf { zoom: 1; }
+*:first-child+html .cf { zoom: 1; }
+
+#social { display: block; list-style: none; padding: 0; margin: 20px; }
+
+#social > li { display: block; margin: 0; padding: 10px; float: left; }
+
+
+/*
+ * Socialite fallbacks!
+ */

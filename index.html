@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+	<title>Socialite.js</title>
+	<script>
+		var docElement = document.documentElement;
+		docElement.className = docElement.className.replace(/\bno-js\b/, '') + ' js ';
+	</script>
+	<link rel="stylesheet" href="socialite.css">
+</head>
+<body>
+	<h1>socialite.js</h1>
+	<p>Introducing Socialite, the JavaScript that makes social sharing buttons a breeze to implementation.</p>
+	<p>Because if you're selling your soul, you may as well do it asynchronously.</p>
+	<h2>Features and Benefits</h2>
+	<ul>
+		<li>No dependencies.
+		<li>Less than 2kb when minified and compressed.</li>
+		<li>Lazy-load sharing buttons. On document load, or whenever you want!</li>
+		<li>More accessible and styleable defaults/fallbacks.</li>
+		<li>Built in support for Twitter, Google+, Facebook and LinkedIn.</li>
+		<li>Easily extendable with other social networks.</li>
+	</ul>
+	<h2>Share Socialite</h2>
+	<ul id="social" class="cf">
+		<li>
+			<a href="http://twitter.com/share" class="socialise twitter" data-text="Socialite.js" data-url="http://socialitejs.com" data-count="vertical" data-via="dbushell" rel="nofollow" target="_blank">
+				<span>Share on Twitter</span>
+			</a>
+		</li>
+		<li>
+			<a href="https://plusone.google.com/_/+1/confirm?hl=en&amp;url=http://socialitejs.com" class="socialise plusone" data-size="tall" data-href="http://socialitejs.com" rel="nofollow" target="_blank">
+				<span>Share on Google+</span>
+			</a>
+		</li>
+		<li>
+			<a href="http://www.facebook.com/sharer.php?u=http://www.socialitejs.com&amp;t=Socialite.js" class="socialise facebook" data-href="http://socialitejs.com" data-send="false" data-layout="box_count" data-width="60" data-show-faces="false" rel="nofollow" target="_blank">
+				<span>Share on Facebook</span>
+			</a>
+		</li>
+		<li>
+			<a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://socialitejs.com&amp;title=Socialite.js" class="socialise linkedin" data-url="http://socialitejs.com" data-counter="top" rel="nofollow" target="_blank">
+				<span>Share on LinkedIn</span>
+			</a>
+		</li>
+		<li>
+			<a href="http://stumbleupon.com/submit?url=http://socialitejs.com" data-r="5" data-url="http://socialitejs.com" class="socialise stumbleupon">
+				<span>Stumble!</span>
+			</a>
+		</li>
+	</ul>
+	<script src="socialite-1.0.js"></script>
+	<script>
+
+	function onDOMContentLoaded()
+	{
+
+		// example of extending the social networks
+		Socialite.extend('stumbleupon', function(elem, button, _socialite)
+		{
+			var r = elem.attributes['data-r'] ? elem.attributes['data-r'].value : '1';
+			var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
+			src += _socialite.getDataAttributes(elem);
+			var iframe = _socialite.createIFrame(src);
+			button.replaceChild(iframe, elem);
+		});
+
+		// initialise all elements with the class "socialise"
+		Socialite.load();
+
+		// create and activate an element with JavaScript
+		/*
+		setTimeout(function() {
+			var b1 = document.createElement('div');
+			document.body.appendChild(b1);
+			Socialite.activate(b1, 'linkedin');
+		}, 3000);
+		*/
+
+	}
+
+	window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
+
+	</script>
+</body>
+</html>
