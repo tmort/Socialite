@@ -20,11 +20,15 @@ Copyright © 2012
 
 ## Functions
 
+	<a href="http://twitter.com/share" class="socialite twitter" data-text="Socialite.js" data-url="http://socialitejs.com" data-count="vertical" data-via="dbushell" rel="nofollow" target="_blank">
+		Share on Twitter
+	</a>
+
 ### Load
 
 	Socialite.load();
 
-`load` will search the document for elements with the class `socialise` and magically transform them into sharing buttons.
+`load` will search the document for elements with the class `socialite` and magically transform them into sharing buttons (based on a network class and data-* attributes).
 
 	Socialite.load(context);
 

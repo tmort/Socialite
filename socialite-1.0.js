@@ -91,7 +91,7 @@ window.Socialite = (function()
 
 		// if no element then search the context for instances
 		if (elem === undefined) {
-			var find = context.getElementsByClassName('socialise');
+			var find = context.getElementsByClassName('socialite');
 			var length = find.length;
 			if (!length) {
 				return;
@@ -148,7 +148,7 @@ window.Socialite = (function()
 		button.appendChild(elem);
 
 		// hide element from future loading
-		elem.className = elem.className.replace(/\bsocialise\b/, '');
+		elem.className = elem.className.replace(/\bsocialite\b/, '');
 
 		// initialise the button
 		networks[network](elem, button, _socialite);
