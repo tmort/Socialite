@@ -12,8 +12,9 @@ Copyright © 2012
 
 ## Features and Benefits
 
+* No dependencies.
+* Loads external resources only when needed.
 * Less than 2kb when minified and compressed.
-* Lazy loading.
 * More accessible and styleable defaults/fallbacks.
 * Built in support for Twitter, Google+, Facebook and LinkedIn.
 * Easily extendable with other social networks.
