@@ -2,11 +2,26 @@
 * html .cf { zoom: 1; }
 *:first-child+html .cf { zoom: 1; }
 
-#social { display: block; list-style: none; padding: 0; margin: 20px; }
+body { font-family: 'Helvetica Neue', Arial, sans-serif; padding: 1.25em; font-size: 100%; line-height: 1;  -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 
+h1 { font-size: 2.5em; line-height: 1.333em; margin: 0 0 0.5em 0; }
+h2 { font-size: 1.25em; line-height: 1.333em; margin: 0.5em 0; }
+
+
+#intro p, #intro li { font-size: 1em; line-height: 1.5em; margin: 0 0 0.5em 0; }
+#intro li { margin: 0 0 0.25em 0; }
+
+#social { display: block; list-style: none; padding: 0; margin: 20px; }
 #social > li { display: block; margin: 0; padding: 10px; float: left; }
 
 
 /*
- * Socialite fallbacks!
+ * Socialite
  */
+
+.socialised { position: relative; overflow: hidden; }
+.socialised.twitter { width: 55px; height: 65px; }
+.socialised.plusone { width: 50px; height: 65px; }
+.socialised.facebook { width: 50px; height: 65px; }
+.socialised.linkedin { width: 60px; height: 65px; }
+.socialised.stumbleupon { width: 50px; height: 65px; }

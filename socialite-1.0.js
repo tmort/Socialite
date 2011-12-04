@@ -57,6 +57,30 @@ window.Socialite = (function()
 		return str;
 	};
 
+	/* get elements within context with a specific class name (with fallback for IE < 9) */
+	_socialite.getElements = function(context, name)
+	{
+		if (typeof context.getElementsByClassName === 'function') {
+			return context.getElementsByClassName(name);
+		}
+		var	elems = [], all = context.getElementsByTagName('*'), len = all.length;
+		for (var i = 0; i < len; i++) {
+			var cname = ' ' + all[i].className + ' ';
+			if (cname.indexOf(name) !== -1) {
+				elems.push(all[i]);
+			}
+		}
+		return elems;
+	}
+
+	// no event support yet...
+	_socialite.createEvent = function(name, elem)
+	{
+		var e = document.createEvent('Event');
+		e.initEvent(name, true, true);
+		elem.dispatchEvent(e);
+	};
+
 	// return an iframe element
 	// do iframes need width and height?
 	_socialite.createIFrame = function(src)
@@ -76,7 +100,7 @@ window.Socialite = (function()
 		Socialite.load(null, elem, network);
 	};
 
-	// load and initialise buttons
+	// load and initialise buttons (recursively)
 	Socialite.load = function(context, elem, network)
 	{
 		// if no context use the document
@@ -84,14 +108,17 @@ window.Socialite = (function()
 
 		// if no element then search the context for instances
 		if (elem === undefined) {
-			var find = context.getElementsByClassName('socialite');
+			var elems = find = _socialite.getElements(context, 'socialite');
 			var length = find.length;
 			if (!length) {
 				return;
 			}
-			var elems = [];
-			for (var i = 0; i < length; i++) {
-				elems[i] = find[i];
+			// create a new array if we're dealing with a live NodeList
+			if (typeof elems.item !== undefined) {
+				var elems = [];
+				for (var i = 0; i < length; i++) {
+					elems[i] = find[i];
+				}
 			}
 			Socialite.load(context, elems, network);
 			return;

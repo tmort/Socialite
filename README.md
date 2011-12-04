@@ -12,6 +12,7 @@ Copyright © 2012
 
 ## Features and Benefits
 
+* No more tedious copy/paste!
 * No dependencies.
 * Loads external resources only when needed.
 * Less than 2kb when minified and compressed.
