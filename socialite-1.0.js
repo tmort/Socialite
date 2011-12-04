@@ -6,7 +6,7 @@
  */
 window.Socialite = (function()
 {	
-	var _socialite = { },
+	var	_socialite = { },
 		Socialite = { },
 		networks = { },
 		appends = { },
@@ -19,18 +19,18 @@ window.Socialite = (function()
 		};
 
 	/* append a known script element to the document body */
-	_socialite.appendScript = function(name, id)
+	_socialite.appendScript = function(network, id)
 	{
-		if (appends[name]) {
+		if (appends[network]) {
 			return false;
 		}
-		appends[name] = true;
+		appends[network] = true;
 		var js = document.createElement('script');
 		js.onload = function() {
-			loaded[name] = true;
+			loaded[network] = true;
 		};
 		js.async = true;
-		js.src = sources[name];
+		js.src = sources[network];
 		if (id) {
 			js.id = id;
 		}
@@ -41,8 +41,7 @@ window.Socialite = (function()
 	// copy data-* attributes from one element to another
 	_socialite.copyDataAtributes = function(from, to)
 	{
-		var i,
-			attr = from.attributes;
+		var i, attr = from.attributes;
 		for (i = 0; i < attr.length; i++) {
 			if (attr[i].name.indexOf('data-') === 0) {
 				if (attr[i].value.length) {
@@ -55,9 +54,7 @@ window.Socialite = (function()
 	// return data-* attributes from an element as a query string
 	_socialite.getDataAttributes = function(from)
 	{
-		var i,
-			str = '',
-			attr = from.attributes;
+		var i, str = '', attr = from.attributes;
 		for (i = 0; i < attr.length; i++) {
 			if (attr[i].name.indexOf('data-') === 0) {
 				str += encodeURIComponent(attr[i].name) + '=' + encodeURIComponent(attr[i].value) + '&';
