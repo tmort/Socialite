@@ -69,7 +69,7 @@ window.Socialite = (function()
 			}
 		}
 		return elems;
-	}
+	};
 
 	// no event support yet... ignore me!
 	_socialite.createEvent = function(name, elem)
@@ -105,14 +105,14 @@ window.Socialite = (function()
 
 		// if no element then search the context for instances
 		if (elem === undefined) {
-			var elems = find = _socialite.getElements(context, 'socialite');
-			var length = find.length;
+			var	find = _socialite.getElements(context, 'socialite'),
+				elems = find, length = find.length;
 			if (!length) {
 				return;
 			}
 			// create a new array if we're dealing with a live NodeList
 			if (typeof elems.item !== undefined) {
-				var elems = [];
+				elems = [];
 				for (var i = 0; i < length; i++) {
 					elems[i] = find[i];
 				}
