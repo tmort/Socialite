@@ -6,7 +6,8 @@ Socialite provides a very easy way to implement and activate a plethora of socia
 
 [For a demo and documentation visit: **socialitejs.com**](http://www.socialitejs.com/)
 
-Author: David Bushell [http://dbushell.com](http://dbushell.com/) (@dbushell)[http://twitter.com/dbushell/]
+Author: David Bushell [http://dbushell.com](http://dbushell.com/) [@dbushell](http://twitter.com/dbushell/)
+
 Copyright © 2012
 
 ## Features and Benefits
