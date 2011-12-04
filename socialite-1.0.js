@@ -9,22 +9,17 @@ window.Socialite = (function()
 	var	_socialite = { },
 		Socialite = { },
 		networks = { },
-		appends = { },
-		loaded = { },
-		sources = {
-			twitter:  '//platform.twitter.com/widgets.js',
-			plusone:  '//apis.google.com/js/plusone.js',
-			facebook: '//connect.facebook.net/en_US/all.js#xfbml=1',
-			linkedin: '//platform.linkedin.com/in.js'
-		};
+		appended = { },
+		sources = { },
+		loaded = { };
 
 	/* append a known script element to the document body */
 	_socialite.appendScript = function(network, id)
 	{
-		if (appends[network]) {
+		if (typeof network !== 'string' || sources[network] === undefined || appended[network]) {
 			return false;
 		}
-		var js = appends[network] = document.createElement('script');
+		var js = appended[network] = document.createElement('script');
 		js.onload = function() {
 			loaded[network] = true;
 		};
@@ -48,7 +43,7 @@ window.Socialite = (function()
 				}
 			}
 		}
-	}
+	};
 
 	// return data-* attributes from an element as a query string
 	_socialite.getDataAttributes = function(from)
@@ -60,7 +55,7 @@ window.Socialite = (function()
 			}
 		}
 		return str;
-	}
+	};
 
 	// return an iframe element
 	// do iframes need width and height?
@@ -73,8 +68,7 @@ window.Socialite = (function()
 		iframe.setAttribute('src', src);
 		iframe.style.cssText = 'overflow: hidden; border: none;';
 		return iframe;
-	}
-
+	};
 
 	// load a single button
 	Socialite.activate = function(elem, network)
@@ -151,7 +145,6 @@ window.Socialite = (function()
 
 		// initialise the button
 		networks[network](elem, button, _socialite);
-
 	};
 
 	// allow users to extend the list of supported networks
@@ -170,9 +163,10 @@ window.Socialite = (function()
 		return true;
 	};
 
+	// extend with Twitter support
 	Socialite.extend('twitter', function(elem, button)
 	{
-		if (!loaded['twitter']) {
+		if (!loaded.twitter) {
 			var el = document.createElement('a');
 			el.className = 'twitter-share-button';
 			_socialite.copyDataAtributes(elem, el);
@@ -186,29 +180,30 @@ window.Socialite = (function()
 				button.replaceChild(iframe, elem);
 			}
 		}
+	}, '//platform.twitter.com/widgets.js');
 
-	});
-
+	// extend with Google+ support
 	Socialite.extend('plusone', function(elem, button)
 	{
 		var el = document.createElement('div');
 		el.className = 'g-plusone';
 		_socialite.copyDataAtributes(elem, el);
 		button.replaceChild(el, elem);
-		if (!loaded['plusone']) {
+		if (!loaded.plusone) {
 			_socialite.appendScript('plusone');
 		} else {
 			if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.go === 'function') {
-				gapi.plusone.go();
+				window.gapi.plusone.go();
 			}
 		}
-	});
+	}, '//apis.google.com/js/plusone.js');
 
+	// extend with Facebook support
 	Socialite.extend('facebook', function(elem, button)
 	{
 		var el = document.createElement('div');
 
-		if (!loaded['facebook']) {
+		if (!loaded.facebook) {
 			el.className = 'fb-like';
 			_socialite.copyDataAtributes(elem, el);
 			button.replaceChild(el, elem);
@@ -224,8 +219,9 @@ window.Socialite = (function()
 				button.replaceChild(iframe, elem);
 			}
 		}
-	});
+	}, '//connect.facebook.net/en_US/all.js#xfbml=1');
 
+	// extend with LinkedIn support
 	Socialite.extend('linkedin', function(elem, button)
 	{
 		var attr = elem.attributes;
@@ -233,15 +229,16 @@ window.Socialite = (function()
 		el.type = 'IN/Share';
 		_socialite.copyDataAtributes(elem, el);
 		button.replaceChild(el, elem);
-		if (!loaded['linkedin']) {
+		if (!loaded.linkedin) {
 			_socialite.appendScript('linkedin');
 		} else {
 			if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
 				window.IN.init();
 			}
 		}
-	});
+	}, '//platform.linkedin.com/in.js');
 
+	// boom
 	return Socialite;
 
 })();
