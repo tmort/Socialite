@@ -1,13 +1,13 @@
-Author: David Bushell http://dbushell.com @dbushell
-Copyright © 2012
-
 # Socialite
 
 ### Because if you're selling your soul, you may as well do it asynchronously.
 
-Socialite provides a very easy way to implement and activate a plethora of social sharing buttons — any time you wish, on document load, on article hover, on any event!
+Socialite provides a very easy way to implement and activate a plethora of social sharing buttons — any time you wish. On document load, on article hover, on any event!
 
-[For a demo and documentation visit: socialitejs.com](http://www.socialitejs.com/)
+[For a demo and documentation visit: **socialitejs.com**](http://www.socialitejs.com/)
+
+Author: David Bushell [http://dbushell.com](http://dbushell.com/) (@dbushell)[http://twitter.com/dbushell/]
+Copyright © 2012
 
 ## Features and Benefits
 
