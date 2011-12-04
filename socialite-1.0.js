@@ -24,8 +24,7 @@ window.Socialite = (function()
 		if (appends[network]) {
 			return false;
 		}
-		appends[network] = true;
-		var js = document.createElement('script');
+		var js = appends[network] = document.createElement('script');
 		js.onload = function() {
 			loaded[network] = true;
 		};
@@ -156,7 +155,7 @@ window.Socialite = (function()
 	};
 
 	// allow users to extend the list of supported networks
-	Socialite.extend = function(network, callback)
+	Socialite.extend = function(network, callback, source)
 	{
 		if (typeof network !== 'string' || typeof callback !== 'function') {
 			return false;
@@ -164,7 +163,10 @@ window.Socialite = (function()
 		if (networks[network] !== undefined) {
 			return false;
 		}
-		networks[network] = callback;	
+		if (source !== undefined && typeof source === 'string') {
+			sources[network] = source;
+		}
+		networks[network] = callback;
 		return true;
 	};
 
