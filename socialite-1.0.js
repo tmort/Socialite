@@ -22,7 +22,7 @@ window.Socialite = (function()
 	/* append a known script element to the document body */
 	_socialite.appendScript = function(network, id)
 	{
-		if (typeof network !== 'string' || sources[network] === undefined || appended[network]) {
+		if (typeof network !== 'string' || appended[network] || sources[network] === undefined) {
 			return false;
 		}
 		var js = appended[network] = document.createElement('script');
