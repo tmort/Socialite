@@ -55,11 +55,13 @@
 				<span>Share on LinkedIn</span>
 			</a>
 		</li>
+		<!--
 		<li>
 			<a href="http://stumbleupon.com/submit?url=http://socialitejs.com" data-r="5" data-url="http://socialitejs.com" class="socialite stumbleupon">
 				<span>Stumble!</span>
 			</a>
 		</li>
+		-->
 	</ul>
 	<p>Copyright &copy; <a rel="author" href="http://dbushell.com/">David Bushell</a>
 	<script src="socialite-1.0.js"></script>
@@ -68,29 +70,7 @@
 	function onDOMContentLoaded()
 	{
 
-		// example of extending the social networks
-		Socialite.extend('stumbleupon', function(instance, _socialite)
-		{
-			var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
-			var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
-			src += _socialite.getDataAttributes(instance.elem);
-			var iframe = _socialite.createIFrame(src);
-			instance.button.replaceChild(iframe, instance.elem);
-			instance.loaded = true;
-			instance.container.className += ' socialite-loaded';
-		});
-
-		// initialise all elements with the class "socialise"
-		Socialite.load();
-
-		// create and activate an element with JavaScript
-		/*
-		setTimeout(function() {
-			var b1 = document.createElement('div');
-			document.body.appendChild(b1);
-			Socialite.activate(b1, 'twitter');
-		}, 3000);
-		*/
+		Socialite.load( document.getElementById('social') );
 
 	}
 
@@ -101,6 +81,29 @@
 			onDOMContentLoaded();
 		};
 	}
+
+	/*
+	setTimeout(function() {
+		var b1 = document.createElement('div');
+		document.body.appendChild(b1);
+		Socialite.activate(b1, 'twitter');
+	}, 3000);
+	*/
+
+	// example of extending the social networks
+	// needs updating!
+	/*
+	Socialite.extend('stumbleupon', function(instance, _socialite)
+	{
+		var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
+		var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
+		src += _socialite.getDataAttributes(instance.elem);
+		var iframe = _socialite.createIFrame(src);
+		instance.button.replaceChild(iframe, instance.elem);
+		instance.loaded = true;
+		instance.container.className += ' socialite-loaded';
+	});
+	*/
 
 	</script>
 

@@ -31,11 +31,7 @@ window.Socialite = (function()
 			if (cache[network] !== undefined) {
 				var len = cache[network].length;
 				for (var i = 0; i < len; i++) {
-					var instance = cache[network][i];
-					if ( ! instance.loaded) {
-						instance.loaded = true;
-						instance.container.className += ' socialite-loaded';
-					}
+					_socialite.onLoad(cache[network][i]);
 				}
 			}
 		};
@@ -91,6 +87,15 @@ window.Socialite = (function()
 			}
 		}
 		return elems;
+	};
+
+	_socialite.onLoad = function(instance)
+	{
+		if (instance.loaded) {
+			return;
+		}
+		instance.loaded = true;
+		instance.container.className += ' socialite-loaded';
 	};
 
 	// no event support yet... ignore me!
@@ -250,9 +255,7 @@ window.Socialite = (function()
 			src += _socialite.getDataAttributes(instance.elem);
 			var iframe = _socialite.createIFrame(src);
 			instance.button.replaceChild(iframe, instance.elem);
-			instance.loaded = true;
-			instance.container.className += ' socialite-loaded';
-			//}
+			_socialite.onLoad(instance);
 		}
 	}, '//platform.twitter.com/widgets.js');
 
@@ -268,10 +271,8 @@ window.Socialite = (function()
 		} else {
 			if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.go === 'function') {
 				window.gapi.plusone.go();
-				instance.loaded = true;
-				instance.container.className += ' socialite-loaded';
-			}
-			// else - fallback to iframe?
+				_socialite.onLoad(instance);
+			} // else - fallback to iframe?
 		}
 	}, '//apis.google.com/js/plusone.js');
 
@@ -290,13 +291,12 @@ window.Socialite = (function()
 			// XFBML is nasty! use an iframe instead :)
 			//if (typeof FB.XFBML.parse === 'function')
 			//	FB.XFBML.parse(el);
+			//}
 			var src = '//www.facebook.com/plugins/like.php?';
 			src += _socialite.getDataAttributes(instance.elem);
 			var iframe = _socialite.createIFrame(src);
 			instance.button.replaceChild(iframe, instance.elem);
-			instance.loaded = true;
-			instance.container.className += ' socialite-loaded';
-			//}
+			_socialite.onLoad(instance);
 		}
 	}, '//connect.facebook.net/en_US/all.js#xfbml=1');
 
@@ -313,10 +313,8 @@ window.Socialite = (function()
 		} else {
 			if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
 				window.IN.init();
-				instance.loaded = true;
-				instance.container.className += ' socialite-loaded';
-			}
-			// else fallback to iframe?
+				_socialite.onLoad(instance);
+			} // else fallback to iframe?
 		}
 	}, '//platform.linkedin.com/in.js');
 
