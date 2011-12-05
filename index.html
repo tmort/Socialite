@@ -88,7 +88,13 @@
 
 	}
 
-	window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
+	if (window.addEventListener !== undefined) {
+		window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
+	} else {
+		window.onload = function() {
+			onDOMContentLoaded();
+		};
+	}
 
 	</script>
 
