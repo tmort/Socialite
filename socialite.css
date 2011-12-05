@@ -33,7 +33,7 @@ h2 { font-size: 1.25em; line-height: 1.333em; margin: 0.5em 0; }
 #social .linkedin { width: 60px; height: 65px; background-position: -215px 0; }
 #social .stumbleupon { width: 50px; height: 65px; background-position: -295px 0; }
 
-.oldie #social .socialite-loaded { background: none !important; }
+#social .socialite-loaded { background: none !important; }
 
 #social .socialite-button { display: none; opacity: 0; }
 #social .socialite-loaded .socialite-button { display: block; opacity: 1; }

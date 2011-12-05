@@ -86,6 +86,7 @@
 	{
 		var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
 		var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
+		instance.elem.removeAttribute('data-r');
 		src += _socialite.getDataAttributes(instance.elem, true);
 		var iframe = _socialite.createIFrame(src);
 		instance.button.replaceChild(iframe, instance.elem);
