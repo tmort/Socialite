@@ -19,7 +19,7 @@ window.Socialite = (function()
 		/* all Socialite button instances */
 		cache = { };
 
-	/* append a known script element to the document body */
+	/* append a known script element once to the document body */
 	_socialite.appendScript = function(network, id)
 	{
 		if (typeof network !== 'string' || appended[network] || sources[network] === undefined) {
@@ -47,6 +47,12 @@ window.Socialite = (function()
 		}
 		document.body.appendChild(js);
 		return true;
+	};
+
+	/* check if an appended script has loaded */
+	_socialite.hasLoaded = function(network)
+	{
+		return (typeof network !== 'string') ? false : loaded[network] === true;
 	};
 
 	// copy data-* attributes from one element to another
@@ -92,6 +98,7 @@ window.Socialite = (function()
 		return elems;
 	};
 
+	/* called by an extension once an instance has loaded */
 	_socialite.onLoad = function(instance)
 	{
 		if (instance.loaded) {
@@ -136,10 +143,10 @@ window.Socialite = (function()
 	Socialite.load = function(context, elem, network)
 	{
 		// if no context use the document
-		context = (typeof context === 'object') ? context : document;
+		context = (typeof context === 'object' && context !== null && context.nodeType === 1) ? context : document;
 
 		// if no element then search the context for instances
-		if (elem === undefined) {
+		if (elem === undefined || elem === null) {
 			var	find = _socialite.getElements(context, 'socialite'),
 				elems = find, length = find.length;
 			if (!length) {
@@ -241,7 +248,7 @@ window.Socialite = (function()
 	// extend with Twitter support
 	Socialite.extend('twitter', function(instance)
 	{
-		if (!loaded.twitter) {
+		if ( ! _socialite.hasLoaded('twitter')) {
 			var el = document.createElement('a');
 			el.className = 'twitter-share-button';
 			_socialite.copyDataAtributes(instance.elem, el);
@@ -264,7 +271,7 @@ window.Socialite = (function()
 		el.className = 'g-plusone';
 		_socialite.copyDataAtributes(instance.elem, el);
 		instance.button.replaceChild(el, instance.elem);
-		if (!loaded.plusone) {
+		if ( ! _socialite.hasLoaded('plusone')) {
 			_socialite.appendScript('plusone');
 		} else {
 			if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.go === 'function') {
@@ -278,8 +285,7 @@ window.Socialite = (function()
 	Socialite.extend('facebook', function(instance)
 	{
 		var el = document.createElement('div');
-
-		if (!loaded.facebook) {
+		if ( ! _socialite.hasLoaded('facebook')) {
 			el.className = 'fb-like';
 			_socialite.copyDataAtributes(instance.elem, el);
 			instance.button.replaceChild(el, instance.elem);
@@ -306,7 +312,7 @@ window.Socialite = (function()
 		el.type = 'IN/Share';
 		_socialite.copyDataAtributes(instance.elem, el);
 		instance.button.replaceChild(el, instance.elem);
-		if (!loaded.linkedin) {
+		if (!_socialite.hasLoaded('linkedin')) {
 			_socialite.appendScript('linkedin');
 		} else {
 			if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {

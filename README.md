@@ -13,12 +13,13 @@ Copyright © 2012
 ## Features and Benefits
 
 * No more tedious copy/paste!
-* No dependencies.
+* No dependencies to use.
 * Loads external resources only when needed.
 * Less than 2kb when minified and compressed.
 * More accessible and styleable defaults/fallbacks.
 * Built in support for Twitter, Google+, Facebook and LinkedIn.
-* Easily extendable with other social networks.
+* Extendable with other social networks.
+* Mimics native implementation when activated.
 * Supported in all browsers (providing the buttons are).
 
 ## Setup
@@ -61,7 +62,7 @@ With `extend` you can add more social networks! The `function` is called by `Soc
 
 ## Things To Do...
 
-* external extentions need access to `loaded`, and `cache`?
+* Add more extensions!
 * will events be useful?
 * can I do a better check for script loading and activation? e.g. for smooth transitions from defaults.
 

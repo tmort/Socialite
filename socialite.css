@@ -8,8 +8,8 @@ h1 { font-size: 2.5em; line-height: 1.333em; margin: 0 0 0.5em 0; }
 h2 { font-size: 1.25em; line-height: 1.333em; margin: 0.5em 0; }
 
 
-#intro p, #intro li { font-size: 1em; line-height: 1.5em; margin: 0 0 0.5em 0; }
-#intro li { margin: 0 0 0.25em 0; }
+.text p, .text li { font-size: 1em; line-height: 1.5em; margin: 0 0 0.5em 0; }
+.text li { margin: 0 0 0.25em 0; }
 
 /*
  * Socialite
