@@ -61,7 +61,7 @@ window.Socialite = (function()
 		if (typeof context.getElementsByClassName === 'function') {
 			return context.getElementsByClassName(name);
 		}
-		var	elems = [], all = context.getElementsByTagName('*'), len = all.length;
+		var elems = [], all = context.getElementsByTagName('*'), len = all.length;
 		for (var i = 0; i < len; i++) {
 			var cname = ' ' + all[i].className + ' ';
 			if (cname.indexOf(name) !== -1) {
@@ -197,12 +197,12 @@ window.Socialite = (function()
 			button.replaceChild(el, elem);
 			_socialite.appendScript('twitter');
 		} else {
-			if (typeof window.twttr === 'object') {
-				var src = '//platform.twitter.com/widgets/tweet_button.html?';
-				src += _socialite.getDataAttributes(elem);
-				var iframe = _socialite.createIFrame(src);
-				button.replaceChild(iframe, elem);
-			}
+			//if (typeof window.twttr === 'object') {
+			var src = '//platform.twitter.com/widgets/tweet_button.html?';
+			src += _socialite.getDataAttributes(elem);
+			var iframe = _socialite.createIFrame(src);
+			button.replaceChild(iframe, elem);
+			//}
 		}
 	}, '//platform.twitter.com/widgets.js');
 
@@ -233,15 +233,14 @@ window.Socialite = (function()
 			button.replaceChild(el, elem);
 			_socialite.appendScript('facebook', 'facebook-jssdk');
 		} else {
-			if (typeof window.FB === 'object') {
-				// XFBML is nasty! use an iframe instead :)
-				//if (typeof FB.XFBML.parse === 'function')
-				//	FB.XFBML.parse(el);
-				var src = '//www.facebook.com/plugins/like.php?';
-				src += _socialite.getDataAttributes(elem);
-				var iframe = _socialite.createIFrame(src);
-				button.replaceChild(iframe, elem);
-			}
+			//if (typeof window.FB === 'object') {
+			// XFBML is nasty! use an iframe instead :)
+			//if (typeof FB.XFBML.parse === 'function')
+			//	FB.XFBML.parse(el);
+			var src = '//www.facebook.com/plugins/like.php?';
+			src += _socialite.getDataAttributes(elem);
+			var iframe = _socialite.createIFrame(src);
+			button.replaceChild(iframe, elem);
 		}
 	}, '//connect.facebook.net/en_US/all.js#xfbml=1');
 
