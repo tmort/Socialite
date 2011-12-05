@@ -92,7 +92,8 @@
 
 	// example of extending the social networks
 	// needs updating!
-	/*
+
+	/* need to remove data- from getDataAttributes?
 	Socialite.extend('stumbleupon', function(instance, _socialite)
 	{
 		var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
@@ -100,10 +101,10 @@
 		src += _socialite.getDataAttributes(instance.elem);
 		var iframe = _socialite.createIFrame(src);
 		instance.button.replaceChild(iframe, instance.elem);
-		instance.loaded = true;
-		instance.container.className += ' socialite-loaded';
+		_socialite.onLoad(instance);
 	});
 	*/
+
 
 	</script>
 
