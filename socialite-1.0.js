@@ -185,13 +185,8 @@ window.Socialite = (function()
 		}
 
 		// create the button elements
-		var container, button = document.createElement('div');
-		if (elem.attributes.href !== undefined) {
-			container = document.createElement('a');
-			container.setAttribute('href', elem.attributes.href.value);
-		} else {
-			container = document.createElement('div');
-		}
+		var	container = document.createElement('div'),
+			button = document.createElement('div');
 		container.className = 'socialised ' + network;
 		button.className = 'socialite-button';
 
