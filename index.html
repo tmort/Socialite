@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html class="no-js">
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -66,13 +69,15 @@
 	{
 
 		// example of extending the social networks
-		Socialite.extend('stumbleupon', function(elem, button, _socialite)
+		Socialite.extend('stumbleupon', function(instance, _socialite)
 		{
-			var r = elem.attributes['data-r'] ? elem.attributes['data-r'].value : '1';
+			var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
 			var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
-			src += _socialite.getDataAttributes(elem);
+			src += _socialite.getDataAttributes(instance.elem);
 			var iframe = _socialite.createIFrame(src);
-			button.replaceChild(iframe, elem);
+			instance.button.replaceChild(iframe, instance.elem);
+			instance.loaded = true;
+			instance.container.className += ' socialite-loaded';
 		});
 
 		// initialise all elements with the class "socialise"
@@ -83,7 +88,7 @@
 		setTimeout(function() {
 			var b1 = document.createElement('div');
 			document.body.appendChild(b1);
-			Socialite.activate(b1, 'linkedin');
+			Socialite.activate(b1, 'twitter');
 		}, 3000);
 		*/
 
