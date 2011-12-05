@@ -58,3 +58,11 @@ Be kind! Provide an element to search within using `context` rather than the who
 	Socialite.extend('network', function);
 
 With `extend` you can add more social networks! The `function` is called by `Socialite.load` and `Socialite.activate` to replace the default element with the shiny sharing button. 
+
+## Things To Do...
+
+* external extentions need access to `loaded`, and `cache`?
+* will events be useful?
+* can I do a better check for script loading and activation? e.g. for smooth transitions from defaults.
+
+Send me feedback and testing issues!

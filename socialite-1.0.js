@@ -82,10 +82,9 @@ window.Socialite = (function()
 		if (typeof context.getElementsByClassName === 'function') {
 			return context.getElementsByClassName(name);
 		}
-		var elems = [], all = context.getElementsByTagName('*'), len = all.length;
-		for (var i = 0; i < len; i++) {
+		var i = 0, elems = [], all = context.getElementsByTagName('*'), len = all.length;
+		for (i = 0; i < len; i++) {
 			var cname = ' ' + all[i].className + ' ';
-
 			if (cname.indexOf(' ' + name + ' ') !== -1) {
 				elems.push(all[i]);
 			}
@@ -119,11 +118,11 @@ window.Socialite = (function()
 	_socialite.createIFrame = function(src)
 	{
 		var iframe = document.createElement('iframe');
+		iframe.style.cssText = 'overflow: hidden; border: none;';
 		iframe.setAttribute('allowtransparency', 'true');
 		iframe.setAttribute('frameborder', '0');
 		iframe.setAttribute('scrolling', 'no');
 		iframe.setAttribute('src', src);
-		iframe.style.cssText = 'overflow: hidden; border: none;';
 		return iframe;
 	};
 
