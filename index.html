@@ -56,13 +56,11 @@
 				<span>Share on LinkedIn</span>
 			</a>
 		</li>
-		<!--
 		<li>
 			<a href="http://stumbleupon.com/submit?url=http://socialitejs.com" data-r="5" data-url="http://socialitejs.com" class="socialite stumbleupon">
 				<span>Stumble!</span>
 			</a>
 		</li>
-		-->
 	</ul>
 	<p>Copyright &copy; <a rel="author" href="http://dbushell.com/">David Bushell</a>
 	<script src="socialite-1.0.js"></script>
@@ -83,29 +81,26 @@
 		};
 	}
 
-	/*
-	setTimeout(function() {
-		var b1 = document.createElement('div');
-		document.body.appendChild(b1);
-		Socialite.activate(b1, 'twitter');
-	}, 3000);
-	*/
-
-	// example of extending the social networks
-	// needs updating!
-
-	/* need to remove data- from getDataAttributes?
+	// example of extending the networks for linkedin
 	Socialite.extend('stumbleupon', function(instance, _socialite)
 	{
 		var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
 		var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
-		src += _socialite.getDataAttributes(instance.elem);
+		src += _socialite.getDataAttributes(instance.elem, true);
 		var iframe = _socialite.createIFrame(src);
 		instance.button.replaceChild(iframe, instance.elem);
 		_socialite.onLoad(instance);
 	});
-	*/
 
+	// load buttons at any time!
+	/*
+	setTimeout(function() {
+		var b1 = document.createElement('div');
+		document.body.appendChild(b1);
+		b1.setAttribute('data-href', 'http://socialitejs.com/');
+		Socialite.activate(b1, 'facebook');
+	}, 3000);
+	*/
 
 	</script>
 

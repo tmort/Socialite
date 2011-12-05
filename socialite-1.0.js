@@ -61,12 +61,16 @@ window.Socialite = (function()
 	};
 
 	// return data-* attributes from an element as a query string
-	_socialite.getDataAttributes = function(from)
+	_socialite.getDataAttributes = function(from, noprefix)
 	{
 		var i, str = '', attr = from.attributes;
 		for (i = 0; i < attr.length; i++) {
 			if (attr[i].name.indexOf('data-') === 0 && attr[i].value.length) {
-				str += encodeURIComponent(attr[i].name) + '=' + encodeURIComponent(attr[i].value) + '&';
+				if (noprefix === true) {
+					str += encodeURIComponent(attr[i].name.substring(5)) + '=' + encodeURIComponent(attr[i].value) + '&';
+				} else {
+					str += encodeURIComponent(attr[i].name) + '=' + encodeURIComponent(attr[i].value) + '&';
+				}
 			}
 		}
 		return str;
@@ -252,7 +256,7 @@ window.Socialite = (function()
 		} else {
 			//if (typeof window.twttr === 'object') {
 			var src = '//platform.twitter.com/widgets/tweet_button.html?';
-			src += _socialite.getDataAttributes(instance.elem);
+			src += _socialite.getDataAttributes(instance.elem, true);
 			var iframe = _socialite.createIFrame(src);
 			instance.button.replaceChild(iframe, instance.elem);
 			_socialite.onLoad(instance);
@@ -293,7 +297,7 @@ window.Socialite = (function()
 			//	FB.XFBML.parse(el);
 			//}
 			var src = '//www.facebook.com/plugins/like.php?';
-			src += _socialite.getDataAttributes(instance.elem);
+			src += _socialite.getDataAttributes(instance.elem, true);
 			var iframe = _socialite.createIFrame(src);
 			instance.button.replaceChild(iframe, instance.elem);
 			_socialite.onLoad(instance);
