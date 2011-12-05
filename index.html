@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html class="no-js">
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,8 +28,10 @@
 			<li>More accessible and styleable defaults/fallbacks.</li>
 			<li>Built in support for Twitter, Google+, Facebook and LinkedIn.</li>
 			<li>Easily extendable with other social networks.</li>
+			<li>Supported in all browsers (providing the buttons are).</li>
 		</ul>
-		<p>Follow <a rel="me" href="http://twitter.com/dbushell/" target="_blank" title="David Bushell on Twitter"><strong>@dbushell</strong></a> or <a rel="me" href="https://plus.google.com/112664170427933857280/posts/" target="_blank" title="David Bushell on Google+"><strong>+David Bushell</strong></a> for updates!</p>
+		<p>Follow <a href="http://twitter.com/dbushell/" title="David Bushell on Twitter" rel="me" target="_blank"><strong>@dbushell</strong></a> or <a href="https://plus.google.com/112664170427933857280/posts/" title="David Bushell on Google+" rel="me" target="_blank"><strong>+David Bushell</strong></a> for updates.</p>
+		<p>Please send me feedback!</p>
 		<p><a href="https://github.com/dbushell/Socialite" target="_blank"><strong>Get it on GitHub!</strong></a></p>
 		<h2>Share Socialite</h2>
 	</div>
@@ -64,31 +69,39 @@
 	function onDOMContentLoaded()
 	{
 
-		// example of extending the social networks
-		Socialite.extend('stumbleupon', function(elem, button, _socialite)
-		{
-			var r = elem.attributes['data-r'] ? elem.attributes['data-r'].value : '1';
-			var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
-			src += _socialite.getDataAttributes(elem);
-			var iframe = _socialite.createIFrame(src);
-			button.replaceChild(iframe, elem);
-		});
-
-		// initialise all elements with the class "socialise"
-		Socialite.load();
-
-		// create and activate an element with JavaScript
-		/*
-		setTimeout(function() {
-			var b1 = document.createElement('div');
-			document.body.appendChild(b1);
-			Socialite.activate(b1, 'linkedin');
-		}, 3000);
-		*/
+		Socialite.load( document.getElementById('social') );
 
 	}
 
-	window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
+	if (window.addEventListener !== undefined) {
+		window.addEventListener('DOMContentLoaded', onDOMContentLoaded, false);
+	} else {
+		window.onload = function() {
+			onDOMContentLoaded();
+		};
+	}
+
+	// example of extending the networks for linkedin
+	Socialite.extend('stumbleupon', function(instance, _socialite)
+	{
+		var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
+		var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
+		instance.elem.removeAttribute('data-r');
+		src += _socialite.getDataAttributes(instance.elem, true);
+		var iframe = _socialite.createIFrame(src);
+		instance.button.replaceChild(iframe, instance.elem);
+		_socialite.onLoad(instance);
+	});
+
+	// load buttons at any time!
+	/*
+	setTimeout(function() {
+		var b1 = document.createElement('div');
+		document.body.appendChild(b1);
+		b1.setAttribute('data-href', 'http://socialitejs.com/');
+		Socialite.activate(b1, 'facebook');
+	}, 3000);
+	*/
 
 	</script>
 
