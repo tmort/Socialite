@@ -97,9 +97,10 @@
 
 	function onDOMContentLoaded()
 	{
-
-		Socialite.load( document.getElementById('social') );
-
+		// let's wait a little, why not?
+		setTimeout(function() {
+			Socialite.load( document.getElementById('social') );
+		}, 500);
 	}
 
 	if (window.addEventListener !== undefined) {
@@ -109,18 +110,6 @@
 			onDOMContentLoaded();
 		};
 	}
-
-	// example of extending the networks for linkedin
-	Socialite.extend('stumbleupon', function(instance, _socialite)
-	{
-		var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
-		var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
-		instance.elem.removeAttribute('data-r');
-		src += _socialite.getDataAttributes(instance.elem, true);
-		var iframe = _socialite.createIFrame(src);
-		instance.button.replaceChild(iframe, instance.elem);
-		_socialite.onLoad(instance);
-	});
 
 	// load buttons at any time!
 	/*

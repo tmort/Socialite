@@ -16,13 +16,12 @@ window.Socialite = (function()
 		appended = { },
 		/* a collection of URLs for external scripts */
 		sources = { },
-		/* remembers which network scripts have loaded */
+		/* remember loaded scripts */
 		loaded = { },
 		/* all Socialite button instances */
 		cache = { },
 
 		euc = encodeURIComponent;
-
 
 	/* append a known script element once to the document body */
 	_socialite.appendScript = function(network, id)
@@ -31,22 +30,25 @@ window.Socialite = (function()
 			return false;
 		}
 		var js = appended[network] = document.createElement('script');
-		var onload = function() {
-			loaded[network] = true;
-			if (cache[network] !== undefined) {
-				var len = cache[network].length;
-				for (var i = 0; i < len; i++) {
-					_socialite.onLoad(cache[network][i]);
+		js.async = true;
+		js.src = js.data = sources[network];
+		js.onload = js.onreadystatechange = function ()
+		{
+			if (_socialite.hasLoaded(network)) {
+				return;
+			}
+			var rs = js.readyState;
+			if ( ! rs || rs === 'loaded' || rs === 'complete') {
+				loaded[network] = true;
+				js.onload = js.onreadystatechange = null;			
+				if (cache[network] !== undefined) {
+					var len = cache[network].length;
+					for (var i = 0; i < len; i++) {
+						_socialite.onLoad(cache[network][i]);
+					}
 				}
 			}
 		};
-		if (js.addEventListener) {
-			js.onload = onload;
-		} else {
-			onload();
-		}
-		js.async = true;
-		js.src = sources[network];
 		if (id) {
 			js.id = id;
 		}
