@@ -6,8 +6,10 @@
  */
 window.Socialite = (function()
 {
-	var	_socialite = { },
-		Socialite = { },
+	var	Socialite = { },
+
+		/* internal functions */
+		_socialite = { },
 		/* social networks and callback functions to initialise each instance */
 		networks = { },
 		/* remembers which scripts have been appended */
@@ -17,7 +19,10 @@ window.Socialite = (function()
 		/* remembers which network scripts have loaded */
 		loaded = { },
 		/* all Socialite button instances */
-		cache = { };
+		cache = { },
+
+		euc = encodeURIComponent;
+
 
 	/* append a known script element once to the document body */
 	_socialite.appendScript = function(network, id)
@@ -73,9 +78,9 @@ window.Socialite = (function()
 		for (i = 0; i < attr.length; i++) {
 			if (attr[i].name.indexOf('data-') === 0 && attr[i].value.length) {
 				if (noprefix === true) {
-					str += encodeURIComponent(attr[i].name.substring(5)) + '=' + encodeURIComponent(attr[i].value) + '&';
+					str += euc(attr[i].name.substring(5)) + '=' + euc(attr[i].value) + '&';
 				} else {
-					str += encodeURIComponent(attr[i].name) + '=' + encodeURIComponent(attr[i].value) + '&';
+					str += euc(attr[i].name) + '=' + euc(attr[i].value) + '&';
 				}
 			}
 		}
@@ -107,19 +112,6 @@ window.Socialite = (function()
 		instance.loaded = true;
 		instance.container.className += ' socialite-loaded';
 	};
-
-	// no event support yet... ignore me!
-	/*
-	_socialite.createEvent = function(elem, name)
-	{
-		if (typeof elem !== 'object') {
-			return false;
-		}
-		var e = elem.createEvent('Event');
-		e.initEvent(name, true, true);
-		elem.dispatchEvent(e);
-	};
-	*/
 
 	// return an iframe element - do iframes need width and height?...
 	_socialite.createIFrame = function(src)
@@ -245,84 +237,110 @@ window.Socialite = (function()
 		return true;
 	};
 
-	// extend with Twitter support
-	Socialite.extend('twitter', function(instance)
+	// boom
+	return Socialite;
+
+})();
+
+
+/*
+ * Socialite Extentions - Pick 'n' Mix!
+ * 
+ */
+
+(function()
+{
+
+	var s = window.Socialite;
+
+	// Twitter
+	// https://twitter.com/about/resources/
+	s.extend('twitter', function(instance, _s)
 	{
-		if ( ! _socialite.hasLoaded('twitter')) {
+		if ( ! _s.hasLoaded('twitter')) {
 			var el = document.createElement('a');
 			el.className = 'twitter-share-button';
-			_socialite.copyDataAtributes(instance.elem, el);
+			_s.copyDataAtributes(instance.elem, el);
 			instance.button.replaceChild(el, instance.elem);
-			_socialite.appendScript('twitter');
+			_s.appendScript('twitter');
 		} else {
-			//if (typeof window.twttr === 'object') {
 			var src = '//platform.twitter.com/widgets/tweet_button.html?';
-			src += _socialite.getDataAttributes(instance.elem, true);
-			var iframe = _socialite.createIFrame(src);
+			src += _s.getDataAttributes(instance.elem, true);
+			var iframe = _s.createIFrame(src);
 			instance.button.replaceChild(iframe, instance.elem);
-			_socialite.onLoad(instance);
+			_s.onLoad(instance);
 		}
 	}, '//platform.twitter.com/widgets.js');
 
-	// extend with Google+ support
-	Socialite.extend('plusone', function(instance)
+	// Google+
+	//http://www.google.com/webmasters/+1/button/
+	s.extend('plusone', function(instance, _s)
 	{
 		var el = document.createElement('div');
 		el.className = 'g-plusone';
-		_socialite.copyDataAtributes(instance.elem, el);
+		_s.copyDataAtributes(instance.elem, el);
 		instance.button.replaceChild(el, instance.elem);
-		if ( ! _socialite.hasLoaded('plusone')) {
-			_socialite.appendScript('plusone');
+		if ( ! _s.hasLoaded('plusone')) {
+			_s.appendScript('plusone');
 		} else {
 			if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.go === 'function') {
 				window.gapi.plusone.go();
-				_socialite.onLoad(instance);
+				_s.onLoad(instance);
+
 			} // else - fallback to iframe?
 		}
 	}, '//apis.google.com/js/plusone.js');
 
-	// extend with Facebook support
-	Socialite.extend('facebook', function(instance)
+	// Facebook
+	// http://developers.facebook.com/docs/reference/plugins/like/
+	s.extend('facebook', function(instance, _s)
 	{
 		var el = document.createElement('div');
-		if ( ! _socialite.hasLoaded('facebook')) {
+		if ( ! _s.hasLoaded('facebook')) {
 			el.className = 'fb-like';
-			_socialite.copyDataAtributes(instance.elem, el);
+			_s.copyDataAtributes(instance.elem, el);
 			instance.button.replaceChild(el, instance.elem);
-			_socialite.appendScript('facebook', 'facebook-jssdk');
+			_s.appendScript('facebook', 'facebook-jssdk');
 		} else {
-			//if (typeof window.FB === 'object') {
-			// XFBML is nasty! use an iframe instead :)
-			//if (typeof FB.XFBML.parse === 'function')
-			//	FB.XFBML.parse(el);
-			//}
 			var src = '//www.facebook.com/plugins/like.php?';
-			src += _socialite.getDataAttributes(instance.elem, true);
-			var iframe = _socialite.createIFrame(src);
+			src += _s.getDataAttributes(instance.elem, true);
+			var iframe = _s.createIFrame(src);
 			instance.button.replaceChild(iframe, instance.elem);
-			_socialite.onLoad(instance);
+			_s.onLoad(instance);
 		}
 	}, '//connect.facebook.net/en_US/all.js#xfbml=1');
 
-	// extend with LinkedIn support
-	Socialite.extend('linkedin', function(instance)
+	// LinkedIn
+	// http://developer.linkedin.com/plugins/share-button/
+	s.extend('linkedin', function(instance, _s)
 	{
 		var attr = instance.elem.attributes;
 		var el = document.createElement('script');
 		el.type = 'IN/Share';
-		_socialite.copyDataAtributes(instance.elem, el);
+		_s.copyDataAtributes(instance.elem, el);
 		instance.button.replaceChild(el, instance.elem);
-		if (!_socialite.hasLoaded('linkedin')) {
-			_socialite.appendScript('linkedin');
+		if (!_s.hasLoaded('linkedin')) {
+			_s.appendScript('linkedin');
 		} else {
 			if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
 				window.IN.init();
-				_socialite.onLoad(instance);
+				_s.onLoad(instance);
 			} // else fallback to iframe?
 		}
 	}, '//platform.linkedin.com/in.js');
 
-	// boom
-	return Socialite;
+	// StumbleUpon
+	// http://www.stumbleupon.com/badges/
+	s.extend('stumbleupon', function(instance, _s)
+	{
+		var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
+		var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
+		instance.elem.removeAttribute('data-r');
+		src += _s.getDataAttributes(instance.elem, true);
+		var iframe = _s.createIFrame(src);
+		instance.button.replaceChild(iframe, instance.elem);
+		_s.onLoad(instance);
+	});
+
 
 })();
