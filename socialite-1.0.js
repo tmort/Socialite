@@ -247,7 +247,7 @@ window.Socialite = (function()
 
 
 /*
- * Socialite Extentions - Pick 'n' Mix!
+ * Socialite Extensions - Pick 'n' Mix!
  * 
  */
 
