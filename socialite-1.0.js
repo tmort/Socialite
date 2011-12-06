@@ -21,6 +21,7 @@ window.Socialite = (function()
 		/* all Socialite button instances */
 		cache = { },
 
+		doc = window.document,
 		euc = encodeURIComponent;
 
 	/* append a known script element once to the document body */
@@ -29,7 +30,7 @@ window.Socialite = (function()
 		if (typeof network !== 'string' || appended[network] || sources[network] === undefined) {
 			return false;
 		}
-		var js = appended[network] = document.createElement('script');
+		var js = appended[network] = doc.createElement('script');
 		js.async = true;
 		js.src = js.data = sources[network];
 		js.onload = js.onreadystatechange = function ()
@@ -52,7 +53,7 @@ window.Socialite = (function()
 		if (id) {
 			js.id = id;
 		}
-		document.body.appendChild(js);
+		doc.body.appendChild(js);
 		return true;
 	};
 
@@ -60,6 +61,16 @@ window.Socialite = (function()
 	_socialite.hasLoaded = function(network)
 	{
 		return (typeof network !== 'string') ? false : loaded[network] === true;
+	};
+
+	/* called once an instance is ready */
+	_socialite.onLoad = function(instance)
+	{
+		if (instance.loaded) {
+			return;
+		}
+		instance.loaded = true;
+		instance.container.className += ' socialite-loaded';
 	};
 
 	// copy data-* attributes from one element to another
@@ -105,20 +116,10 @@ window.Socialite = (function()
 		return elems;
 	};
 
-	/* called by an extension once an instance has loaded */
-	_socialite.onLoad = function(instance)
-	{
-		if (instance.loaded) {
-			return;
-		}
-		instance.loaded = true;
-		instance.container.className += ' socialite-loaded';
-	};
-
 	// return an iframe element - do iframes need width and height?...
 	_socialite.createIFrame = function(src)
 	{
-		var iframe = document.createElement('iframe');
+		var iframe = doc.createElement('iframe');
 		iframe.style.cssText = 'overflow: hidden; border: none;';
 		iframe.setAttribute('allowtransparency', 'true');
 		iframe.setAttribute('frameborder', '0');
@@ -137,7 +138,7 @@ window.Socialite = (function()
 	Socialite.load = function(context, elem, network)
 	{
 		// if no context use the document
-		context = (typeof context === 'object' && context !== null && context.nodeType === 1) ? context : document;
+		context = (typeof context === 'object' && context !== null && context.nodeType === 1) ? context : doc;
 
 		// if no element then search the context for instances
 		if (elem === undefined || elem === null) {
@@ -185,15 +186,15 @@ window.Socialite = (function()
 		}
 
 		// create the button elements
-		var	container = document.createElement('div'),
-			button = document.createElement('div');
+		var	container = doc.createElement('div'),
+			button = doc.createElement('div');
 		container.className = 'socialised ' + network;
 		button.className = 'socialite-button';
 
 		// insert container before parent element, or append to the context
 		var parent = elem.parentNode;
 		if (parent === null) {
-			parent = (context === document) ? document.body : context;
+			parent = (context === doc) ? doc.body : context;
 			parent.appendChild(container);
 		} else {
 			parent.insertBefore(container, elem);
