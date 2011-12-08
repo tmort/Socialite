@@ -23,8 +23,9 @@ window.Socialite = (function()
 		cache = { },
 
 		doc = window.document,
-		gcn = typeof doc.getElementsByClassName === 'function',
-		euc = encodeURIComponent;
+		sto = window.setTimeout,
+		euc = encodeURIComponent,
+		gcn = typeof doc.getElementsByClassName === 'function';
 
 	/* append a known script element once to the document body */
 	_socialite.appendScript = function(network, id)
@@ -119,7 +120,7 @@ window.Socialite = (function()
 	};
 
 	// return an iframe element - do iframes need width and height?...
-	_socialite.createIFrame = function(src)
+	_socialite.createIframe = function(src, instance)
 	{
 		var iframe = doc.createElement('iframe');
 		iframe.style.cssText = 'overflow: hidden; border: none;';
@@ -127,6 +128,18 @@ window.Socialite = (function()
 		iframe.setAttribute('frameborder', '0');
 		iframe.setAttribute('scrolling', 'no');
 		iframe.setAttribute('src', src);
+		/* trigger onLoad after iframe, or on timeout if IE < 9 (is getElementsByClassName an accurate test?) */
+		if (instance !== undefined) {
+			if (gcn) {
+				iframe.onload = iframe.onreadystatechange = function() {
+					_socialite.onLoad(instance);
+				};
+			} else {
+				sto(function() {
+					_socialite.onLoad(instance);
+				}, 10);
+			}
+		}
 		return iframe;
 	};
 
@@ -267,18 +280,17 @@ window.Socialite = (function()
 			el.className = 'twitter-share-button';
 			_s.copyDataAtributes(instance.elem, el);
 			instance.button.replaceChild(el, instance.elem);
-			_s.appendScript('twitter');
+			_s.appendScript('twitter', 'twitter-wjs');
 		} else {
 			var src = '//platform.twitter.com/widgets/tweet_button.html?';
 			src += _s.getDataAttributes(instance.elem, true);
-			var iframe = _s.createIFrame(src);
+			var iframe = _s.createIframe(src, instance);
 			instance.button.replaceChild(iframe, instance.elem);
-			_s.onLoad(instance);
 		}
 	}, '//platform.twitter.com/widgets.js');
 
 	// Google+
-	//http://www.google.com/webmasters/+1/button/
+	//https://developers.google.com/+/plugins/+1button/
 	s.extend('plusone', function(instance, _s)
 	{
 		var el = document.createElement('div');
@@ -288,11 +300,11 @@ window.Socialite = (function()
 		if ( ! _s.hasLoaded('plusone')) {
 			_s.appendScript('plusone');
 		} else {
-			if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.go === 'function') {
-				window.gapi.plusone.go();
+			if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.render === 'function') {
+				window.gapi.plusone.render(el);
 				_s.onLoad(instance);
 
-			} // else - fallback to iframe?
+			} // else - fallback to iframe? none documented
 		}
 	}, '//apis.google.com/js/plusone.js');
 
@@ -309,9 +321,8 @@ window.Socialite = (function()
 		} else {
 			var src = '//www.facebook.com/plugins/like.php?';
 			src += _s.getDataAttributes(instance.elem, true);
-			var iframe = _s.createIFrame(src);
+			var iframe = _s.createIframe(src, instance);
 			instance.button.replaceChild(iframe, instance.elem);
-			_s.onLoad(instance);
 		}
 	}, '//connect.facebook.net/en_US/all.js#xfbml=1');
 
@@ -330,7 +341,7 @@ window.Socialite = (function()
 			if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
 				window.IN.init();
 				_s.onLoad(instance);
-			} // else fallback to iframe?
+			}
 		}
 	}, '//platform.linkedin.com/in.js');
 
@@ -342,9 +353,8 @@ window.Socialite = (function()
 		var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
 		instance.elem.removeAttribute('data-r');
 		src += _s.getDataAttributes(instance.elem, true);
-		var iframe = _s.createIFrame(src);
+		var iframe = _s.createIframe(src, instance);
 		instance.button.replaceChild(iframe, instance.elem);
-		_s.onLoad(instance);
 	});
 
 
