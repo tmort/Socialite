@@ -9,17 +9,17 @@ window.Socialite = (function()
 {
 	var	Socialite = { },
 
-		/* internal functions */
+		// internal functions
 		_socialite = { },
-		/* social networks and callback functions to initialise each instance */
+		// social networks and callback functions to initialise each instance
 		networks = { },
-		/* remembers which scripts have been appended */
+		// remembers which scripts have been appended
 		appended = { },
-		/* a collection of URLs for external scripts */
+		// a collection of URLs for external scripts
 		sources = { },
-		/* remember loaded scripts */
+		// remember loaded scripts
 		loaded = { },
-		/* all Socialite button instances */
+		// all Socialite button instances
 		cache = { },
 
 		doc = window.document,
@@ -27,7 +27,7 @@ window.Socialite = (function()
 		euc = encodeURIComponent,
 		gcn = typeof doc.getElementsByClassName === 'function';
 
-	/* append a known script element once to the document body */
+	// append a known script element once to the document body
 	_socialite.appendScript = function(network, id)
 	{
 		if (typeof network !== 'string' || appended[network] || sources[network] === undefined) {
@@ -60,13 +60,13 @@ window.Socialite = (function()
 		return true;
 	};
 
-	/* check if an appended script has loaded */
+	// check if an appended script has loaded
 	_socialite.hasLoaded = function(network)
 	{
 		return (typeof network !== 'string') ? false : loaded[network] === true;
 	};
 
-	/* called once an instance is ready */
+	// called once an instance is ready
 	_socialite.onLoad = function(instance)
 	{
 		if (instance.loaded) {
@@ -103,7 +103,7 @@ window.Socialite = (function()
 		return str;
 	};
 
-	/* get elements within context with a class name (with fallback for IE < 9) */
+	// get elements within context with a class name (with fallback for IE < 9)
 	_socialite.getElements = function(context, name)
 	{
 		if (gcn) {
@@ -128,7 +128,7 @@ window.Socialite = (function()
 		iframe.setAttribute('frameborder', '0');
 		iframe.setAttribute('scrolling', 'no');
 		iframe.setAttribute('src', src);
-		/* trigger onLoad after iframe, or on timeout if IE < 9 (is getElementsByClassName an accurate test?) */
+		// trigger onLoad after iframe, or on timeout if IE < 9 (is getElementsByClassName an accurate test?)
 		if (instance !== undefined) {
 			if (gcn) {
 				iframe.onload = iframe.onreadystatechange = function() {
@@ -222,7 +222,7 @@ window.Socialite = (function()
 		// hide element from future loading
 		elem.className = elem.className.replace(/\bsocialite\b/, '');
 
-		/* create the button instance and save it in cache */
+		// create the button instance and save it in cache
 		if (cache[network] === undefined) {
 			cache[network] = [];
 		}
