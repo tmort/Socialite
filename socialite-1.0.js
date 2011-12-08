@@ -4,6 +4,7 @@
  * Copyright (c) 2011 David Bushell
  * Dual-licensed under the BSD or MIT licenses: http://socialitejs.com/license.txt
  */
+
 window.Socialite = (function()
 {
 	var	Socialite = { },
@@ -22,6 +23,7 @@ window.Socialite = (function()
 		cache = { },
 
 		doc = window.document,
+		gcn = typeof doc.getElementsByClassName === 'function',
 		euc = encodeURIComponent;
 
 	/* append a known script element once to the document body */
@@ -103,7 +105,7 @@ window.Socialite = (function()
 	/* get elements within context with a class name (with fallback for IE < 9) */
 	_socialite.getElements = function(context, name)
 	{
-		if (typeof context.getElementsByClassName === 'function') {
+		if (gcn) {
 			return context.getElementsByClassName(name);
 		}
 		var i = 0, elems = [], all = context.getElementsByTagName('*'), len = all.length;
