@@ -44,7 +44,7 @@ window.Socialite = (function()
 			var rs = js.readyState;
 			if ( ! rs || rs === 'loaded' || rs === 'complete') {
 				loaded[network] = true;
-				js.onload = js.onreadystatechange = null;			
+				js.onload = js.onreadystatechange = null;
 				if (cache[network] !== undefined) {
 					var len = cache[network].length;
 					for (var i = 0; i < len; i++) {
@@ -77,7 +77,7 @@ window.Socialite = (function()
 	};
 
 	// copy data-* attributes from one element to another
-	_socialite.copyDataAtributes = function(from, to)
+	_socialite.copyDataAttributes = function(from, to)
 	{
 		var i, attr = from.attributes;
 		for (i = 0; i < attr.length; i++) {
@@ -88,19 +88,24 @@ window.Socialite = (function()
 	};
 
 	// return data-* attributes from an element as a query string
-	_socialite.getDataAttributes = function(from, noprefix)
+	_socialite.getDataAttributes = function(from, noprefix, nostr)
 	{
-		var i, str = '', attr = from.attributes;
+		var i, str = '', obj = {}, attr = from.attributes;
 		for (i = 0; i < attr.length; i++) {
 			if (attr[i].name.indexOf('data-') === 0 && attr[i].value.length) {
+				var key = attr[i].name;
+				var val = attr[i].value;
 				if (noprefix === true) {
-					str += euc(attr[i].name.substring(5)) + '=' + euc(attr[i].value) + '&';
+					key = key.substring(5);
+				}
+				if (nostr === true) {
+					obj[key] = val;
 				} else {
-					str += euc(attr[i].name) + '=' + euc(attr[i].value) + '&';
+					str += euc(key) + '=' + euc(val) + '&';
 				}
 			}
 		}
-		return str;
+		return nostr ? obj : str;
 	};
 
 	// get elements within context with a class name (with fallback for IE < 9)
@@ -263,7 +268,7 @@ window.Socialite = (function()
 
 /*
  * Socialite Extensions - Pick 'n' Mix!
- * 
+ *
  */
 
 (function()
@@ -278,7 +283,7 @@ window.Socialite = (function()
 		if ( ! _s.hasLoaded('twitter')) {
 			var el = document.createElement('a');
 			el.className = 'twitter-share-button';
-			_s.copyDataAtributes(instance.elem, el);
+			_s.copyDataAttributes(instance.elem, el);
 			instance.button.replaceChild(el, instance.elem);
 			_s.appendScript('twitter', 'twitter-wjs');
 		} else {
@@ -295,16 +300,15 @@ window.Socialite = (function()
 	{
 		var el = document.createElement('div');
 		el.className = 'g-plusone';
-		_s.copyDataAtributes(instance.elem, el);
+		_s.copyDataAttributes(instance.elem, el);
 		instance.button.replaceChild(el, instance.elem);
 		if ( ! _s.hasLoaded('plusone')) {
 			_s.appendScript('plusone');
 		} else {
 			if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.render === 'function') {
-				window.gapi.plusone.render(el);
+				window.gapi.plusone.render(instance.button, _s.getDataAttributes(el, true, true));
 				_s.onLoad(instance);
-
-			} // else - fallback to iframe? none documented
+			}
 		}
 	}, '//apis.google.com/js/plusone.js');
 
@@ -315,7 +319,7 @@ window.Socialite = (function()
 		var el = document.createElement('div');
 		if ( ! _s.hasLoaded('facebook')) {
 			el.className = 'fb-like';
-			_s.copyDataAtributes(instance.elem, el);
+			_s.copyDataAttributes(instance.elem, el);
 			instance.button.replaceChild(el, instance.elem);
 			_s.appendScript('facebook', 'facebook-jssdk');
 		} else {
@@ -333,7 +337,7 @@ window.Socialite = (function()
 		var attr = instance.elem.attributes;
 		var el = document.createElement('script');
 		el.type = 'IN/Share';
-		_s.copyDataAtributes(instance.elem, el);
+		_s.copyDataAttributes(instance.elem, el);
 		instance.button.replaceChild(el, instance.elem);
 		if (!_s.hasLoaded('linkedin')) {
 			_s.appendScript('linkedin');
