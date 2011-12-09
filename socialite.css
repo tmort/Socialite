@@ -8,34 +8,52 @@ h1 { font-size: 2.5em; line-height: 1.333em; margin: 0 0 0.5em 0; }
 h2 { font-size: 1.25em; line-height: 1.333em; margin: 0.5em 0; }
 
 
-#intro p, #intro li { font-size: 1em; line-height: 1.5em; margin: 0 0 0.5em 0; }
-#intro li { margin: 0 0 0.25em 0; }
-
-#social { display: block; list-style: none; padding: 0; margin: 20px; }
-#social > li { display: block; margin: 0; padding: 10px; float: left; }
-
+.text p, .text li { font-size: 1em; line-height: 1.5em; margin: 0 0 0.5em 0; }
+.text li { margin: 0 0 0.25em 0; }
 
 /*
  * Socialite
  */
 
+.socialite-button { display: none; opacity: 0; }
+.socialite-loaded .socialite-button { display: block; opacity: 1; }
+.socialite-button iframe { max-width: 100%; }
+
+/*
+ * Socialite Look-a-like defaults
+ */
+
+#social { display: block; list-style: none; padding: 0; margin: 20px; }
+#social > li { display: block; margin: 0; padding: 10px; float: left; }
 #social .socialite,
 #social .socialised
 { display: block; position: relative; overflow: hidden; background: url('images/social-sprite.png') 0 0 no-repeat; }
-
 /* visually hidden from HTML5 Boilerplate */
 #social .socialite span { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
-
 /* fallback for default and non-loaded instances */
 #social .twitter { width: 55px; height: 65px; background-position: 0 0; }
 #social .plusone { width: 50px; height: 65px; background-position: -75px 0; }
 #social .facebook { width: 50px; height: 65px; background-position: -145px 0; }
 #social .linkedin { width: 60px; height: 65px; background-position: -215px 0; }
 #social .stumbleupon { width: 50px; height: 65px; background-position: -295px 0; }
-
 #social .socialite-loaded { background: none !important; }
 
-#social .socialite-button { display: none; opacity: 0; }
-#social .socialite-loaded .socialite-button { display: block; opacity: 1; }
+/*
+ * Socialite Custom Default
+ */
 
-#social .socialite-button iframe { border: none; background: transparent; }
+#social2-load { margin: 0 0 0.625em 0; font-weight: bold; padding: 5px; }
+
+#social2 { display: block; list-style: none; padding: 10px; margin: 10px; }
+#social2 > li { display: block; margin: 0; }
+#social2 .socialite,
+#social2 .socialised { display: block; position: relative; overflow: hidden; }
+#social2 .socialite,
+#social2 .socialised { width: 100px; height: 30px; background: url('images/custom-default.png') 0 0 no-repeat; }
+#social2 .socialite span { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+#social2 .twitter { background-position: 0 0; }
+#social2 .plusone { background-position: 0 -45px; }
+#social2 .facebook { background-position: 0 -90px; }
+#social2 .linkedin { background-position: 0 -135px; }
+#social2 .socialite-loaded { background: none; }
+
