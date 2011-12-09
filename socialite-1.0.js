@@ -112,7 +112,6 @@ window.Socialite = (function()
 			for (var i = 0; i < len; i++) {
 				_socialite.activateInstance(cache[network][i]);
 			}
-			cache[network] = [];
 		}
 	};
 
