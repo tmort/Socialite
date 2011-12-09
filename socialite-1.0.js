@@ -25,10 +25,11 @@ window.Socialite = (function()
 		doc = window.document,
 		sto = window.setTimeout,
 		euc = encodeURIComponent,
+		fjs = doc.getElementsByTagName('script')[0],
 		gcn = typeof doc.getElementsByClassName === 'function';
 
-	// append a known script element once to the document body
-	_socialite.appendScript = function(network, id)
+	// append a known script element once
+	_socialite.appendScript = function(network, id, callback)
 	{
 		if (typeof network !== 'string' || appended[network] || sources[network] === undefined) {
 			return false;
@@ -45,18 +46,20 @@ window.Socialite = (function()
 			if ( ! rs || rs === 'loaded' || rs === 'complete') {
 				loaded[network] = true;
 				js.onload = js.onreadystatechange = null;
-				if (cache[network] !== undefined) {
-					var len = cache[network].length;
-					for (var i = 0; i < len; i++) {
-						_socialite.onLoad(cache[network][i]);
+				// activate all instances from cache if no callback is defined
+				if (callback !== undefined) {
+					if (typeof callback === 'function') {
+						callback();
 					}
+				} else {
+					_socialite.activateCache(network);
 				}
 			}
 		};
 		if (id) {
 			js.id = id;
 		}
-		doc.body.appendChild(js);
+		fjs.parentNode.insertBefore(js, fjs);
 		return true;
 	};
 
@@ -66,14 +69,51 @@ window.Socialite = (function()
 		return (typeof network !== 'string') ? false : loaded[network] === true;
 	};
 
-	// called once an instance is ready
-	_socialite.onLoad = function(instance)
+	// return an iframe element and activate the instance on load
+	_socialite.createIframe = function(src, instance)
+	{
+		var iframe = doc.createElement('iframe');
+		iframe.style.cssText = 'overflow: hidden; border: none;';
+		iframe.setAttribute('allowtransparency', 'true');
+		iframe.setAttribute('frameborder', '0');
+		iframe.setAttribute('scrolling', 'no');
+		iframe.setAttribute('src', src);
+		// trigger onLoad after iframe, or on timeout if IE < 9 - is getElementsByClassName an accurate test?
+		if (instance !== undefined) {
+			if (gcn) {
+				iframe.onload = iframe.onreadystatechange = function() {
+					iframe.onload = iframe.onreadystatechange = null;
+					_socialite.activateInstance(instance);
+				};
+			} else {
+				sto(function() {
+					_socialite.activateInstance(instance);
+				}, 10);
+			}
+		}
+		return iframe;
+	};
+
+	// called once an instance is ready to display
+	_socialite.activateInstance = function(instance)
 	{
 		if (instance.loaded) {
 			return;
 		}
 		instance.loaded = true;
 		instance.container.className += ' socialite-loaded';
+	};
+
+	// activate all instances waiting in the cache
+	_socialite.activateCache = function(network)
+	{
+		if (cache[network] !== undefined) {
+			var len = cache[network].length;
+			for (var i = 0; i < len; i++) {
+				_socialite.activateInstance(cache[network][i]);
+			}
+			cache[network] = [];
+		}
 	};
 
 	// copy data-* attributes from one element to another
@@ -87,7 +127,7 @@ window.Socialite = (function()
 		}
 	};
 
-	// return data-* attributes from an element as a query string
+	// return data-* attributes from an element as a query string or object
 	_socialite.getDataAttributes = function(from, noprefix, nostr)
 	{
 		var i, str = '', obj = {}, attr = from.attributes;
@@ -122,30 +162,6 @@ window.Socialite = (function()
 			}
 		}
 		return elems;
-	};
-
-	// return an iframe element - do iframes need width and height?...
-	_socialite.createIframe = function(src, instance)
-	{
-		var iframe = doc.createElement('iframe');
-		iframe.style.cssText = 'overflow: hidden; border: none;';
-		iframe.setAttribute('allowtransparency', 'true');
-		iframe.setAttribute('frameborder', '0');
-		iframe.setAttribute('scrolling', 'no');
-		iframe.setAttribute('src', src);
-		// trigger onLoad after iframe, or on timeout if IE < 9 (is getElementsByClassName an accurate test?)
-		if (instance !== undefined) {
-			if (gcn) {
-				iframe.onload = iframe.onreadystatechange = function() {
-					_socialite.onLoad(instance);
-				};
-			} else {
-				sto(function() {
-					_socialite.onLoad(instance);
-				}, 10);
-			}
-		}
-		return iframe;
 	};
 
 	// load a single button
@@ -285,7 +301,13 @@ window.Socialite = (function()
 			el.className = 'twitter-share-button';
 			_s.copyDataAttributes(instance.elem, el);
 			instance.button.replaceChild(el, instance.elem);
-			_s.appendScript('twitter', 'twitter-wjs');
+			if (_s.appendScript('twitter', 'twitter-wjs', false)) {
+				window.twttr = {
+					_e: [function() {
+						_s.activateCache('twitter');
+					}]
+				};
+			}
 		} else {
 			var src = '//platform.twitter.com/widgets/tweet_button.html?';
 			src += _s.getDataAttributes(instance.elem, true);
@@ -307,7 +329,7 @@ window.Socialite = (function()
 		} else {
 			if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.render === 'function') {
 				window.gapi.plusone.render(instance.button, _s.getDataAttributes(el, true, true));
-				_s.onLoad(instance);
+				_s.activateInstance(instance);
 			}
 		}
 	}, '//apis.google.com/js/plusone.js');
@@ -344,7 +366,7 @@ window.Socialite = (function()
 		} else {
 			if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
 				window.IN.init();
-				_s.onLoad(instance);
+				_s.activateInstance(instance);
 			}
 		}
 	}, '//platform.linkedin.com/in.js');
