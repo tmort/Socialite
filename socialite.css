@@ -37,3 +37,5 @@ h2 { font-size: 1.25em; line-height: 1.333em; margin: 0.5em 0; }
 
 #social .socialite-button { display: none; opacity: 0; }
 #social .socialite-loaded .socialite-button { display: block; opacity: 1; }
+
+#social .socialite-button iframe { border: none; background: transparent; }

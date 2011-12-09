@@ -14,25 +14,26 @@
 	<link rel="stylesheet" href="socialite.css">
 </head>
 <body>
-	<div id="intro">
+	<div class="text">
 		<h1>Socialite.js</h1>
-		<p><strong>Currently in development!</strong></p>
+		<p><strong>Currently in development (but working)!</strong></p>
 		<p>Socialite provides a very easy way to implement and activate a plethora of social sharing buttons &mdash; any time you wish. On document load, on article hover, on any event!</p>
 		<p>If you're selling your soul, you may as well do it asynchronously. Socialite won't cause document rendering to hang while waiting for 50kb of social media.</p>
 		<h2>Features and Benefits</h2>
 		<ul>
 			<li>No more tedious copy/paste!</li>
-			<li>No dependencies.</li>
+			<li>No dependencies to use.</li>
 			<li>Loads external resources only when needed.</li>
 			<li>Less than 2kb when minified and compressed.</li>
 			<li>More accessible and styleable defaults/fallbacks.</li>
 			<li>Built in support for Twitter, Google+, Facebook and LinkedIn.</li>
-			<li>Easily extendable with other social networks.</li>
+			<li>Extendable with other social networks.</li>
+			<li>Mimics native implementation when activated.</li>
 			<li>Supported in all browsers (providing the buttons are).</li>
 		</ul>
 		<p>Follow <a href="http://twitter.com/dbushell/" title="David Bushell on Twitter" rel="me" target="_blank"><strong>@dbushell</strong></a> or <a href="https://plus.google.com/112664170427933857280/posts/" title="David Bushell on Google+" rel="me" target="_blank"><strong>+David Bushell</strong></a> for updates.</p>
 		<p>Please send me feedback!</p>
-		<p><a href="https://github.com/dbushell/Socialite" target="_blank"><strong>Get it on GitHub!</strong></a></p>
+		<p><a href="https://github.com/dbushell/Socialite" target="_blank"><strong>Code and documentation on GitHub!</strong></a></p>
 		<h2>Share Socialite</h2>
 	</div>
 	<ul id="social" class="cf">
@@ -62,15 +63,44 @@
 			</a>
 		</li>
 	</ul>
-	<p>Copyright &copy; <a rel="author" href="http://dbushell.com/">David Bushell</a>
+
+	<h2>Late Loading and Custom Defaults!</h2>
+	<input id="social2-load" onclick="javascript:Socialite.load(document.getElementById('social2'));" type="button" value="Load Buttons!">
+	<ul id="social2" class="cf">
+		<li>
+			<a href="http://twitter.com/share" class="socialite twitter" data-text="Socialite.js" data-url="http://socialitejs.com" data-count="horizontal" data-via="dbushell" rel="nofollow" target="_blank">
+				<span>Share on Twitter</span>
+			</a>
+		</li>
+		<li>
+			<a href="https://plusone.google.com/_/+1/confirm?hl=en&amp;url=http://socialitejs.com" class="socialite plusone" data-size="medium" data-href="http://socialitejs.com" rel="nofollow" target="_blank">
+				<span>Share on Google+</span>
+			</a>
+		</li>
+		<li>
+			<a href="http://www.facebook.com/sharer.php?u=http://www.socialitejs.com&amp;t=Socialite.js" class="socialite facebook" data-href="http://socialitejs.com" data-send="false" data-layout="button_count" data-width="60" data-show-faces="false" rel="nofollow" target="_blank">
+				<span>Share on Facebook</span>
+			</a>
+		</li>
+		<li>
+			<a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://socialitejs.com&amp;title=Socialite.js" class="socialite linkedin" data-url="http://socialitejs.com" data-counter="right" rel="nofollow" target="_blank">
+				<span>Share on LinkedIn</span>
+			</a>
+		</li>
+	</ul>
+	<div class="text">
+		<p>Once I'm happy with the code I'll add a load of demos, documentation, and extentions on this page.</p>
+		<p>Copyright &copy; <a rel="author" href="http://dbushell.com/">David Bushell</a>
+	</div>
 	<script src="socialite-1.0.js"></script>
 	<script>
 
 	function onDOMContentLoaded()
 	{
-
-		Socialite.load( document.getElementById('social') );
-
+		// let's wait a little, why not?
+		setTimeout(function() {
+			Socialite.load( document.getElementById('social') );
+		}, 500);
 	}
 
 	if (window.addEventListener !== undefined) {
@@ -80,18 +110,6 @@
 			onDOMContentLoaded();
 		};
 	}
-
-	// example of extending the networks for linkedin
-	Socialite.extend('stumbleupon', function(instance, _socialite)
-	{
-		var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
-		var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
-		instance.elem.removeAttribute('data-r');
-		src += _socialite.getDataAttributes(instance.elem, true);
-		var iframe = _socialite.createIFrame(src);
-		instance.button.replaceChild(iframe, instance.elem);
-		_socialite.onLoad(instance);
-	});
 
 	// load buttons at any time!
 	/*
@@ -107,5 +125,19 @@
 
 	<a href="http://github.com/dbushell/Socialite/" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://a248.e.akamai.net/assets.github.com/img/7afbc8b248c68eb468279e8c17986ad46549fb71/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub"></a>
 
+	<script type="text/javascript">
+	
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-9497100-10']);
+	  _gaq.push(['_setDomainName', 'socialitejs.com']);
+	  _gaq.push(['_trackPageview']);
+	
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+	
+	</script>
 </body>
 </html>
