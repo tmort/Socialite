@@ -25,7 +25,6 @@ window.Socialite = (function()
 		doc = window.document,
 		sto = window.setTimeout,
 		euc = encodeURIComponent,
-		fjs = doc.getElementsByTagName('script')[0],
 		gcn = typeof doc.getElementsByClassName === 'function';
 
 	// append a known script element once
@@ -59,7 +58,7 @@ window.Socialite = (function()
 		if (id) {
 			js.id = id;
 		}
-		fjs.parentNode.insertBefore(js, fjs);
+		doc.body.appendChild(js);
 		return true;
 	};
 
@@ -295,7 +294,7 @@ window.Socialite = (function()
 	// https://twitter.com/about/resources/
 	s.extend('twitter', function(instance, _s)
 	{
-		if ( ! _s.hasLoaded('twitter')) {
+		if (false && ! _s.hasLoaded('twitter')) {
 			var el = document.createElement('a');
 			el.className = 'twitter-share-button';
 			_s.copyDataAttributes(instance.elem, el);
