@@ -207,6 +207,7 @@ window.Socialite = (function()
 
 		// if no network is specified or recognised look for one in the class name
 		if (typeof network !== 'string' || networks[network] === undefined) {
+			network = null;
 			var classes = elem.className.split(' ');
 			for (var k = 0; k < classes.length; k++) {
 				if (networks[classes[k]] !== undefined) {
