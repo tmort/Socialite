@@ -27,7 +27,7 @@ h2 { font-size: 1.25em; line-height: 1.333em; margin: 0.5em 0; }
 #social > li { display: block; margin: 0; padding: 10px; float: left; }
 #social .socialite,
 #social .socialised
-{ display: block; position: relative; overflow: hidden; background: url('images/social-sprite.png') 0 0 no-repeat; }
+{ display: block; position: relative; background: url('images/social-sprite.png') 0 0 no-repeat; }
 /* visually hidden from HTML5 Boilerplate */
 #social .socialite span { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
 /* fallback for default and non-loaded instances */
