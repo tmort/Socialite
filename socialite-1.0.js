@@ -68,6 +68,16 @@ window.Socialite = (function()
 		return (typeof network !== 'string') ? false : loaded[network] === true;
 	};
 
+	// remove an appended script
+	_socialite.removeScript = function(network) {
+		if ( ! _socialite.hasLoaded(network)) {
+			return false;
+		}
+		doc.body.removeChild(appended[network]);
+		appended[network] = loaded[network] = false;
+		return true;
+	};
+
 	// return an iframe element and activate the instance on load
 	_socialite.createIframe = function(src, instance)
 	{
@@ -219,6 +229,12 @@ window.Socialite = (function()
 				return;
 			}
 		}
+		if (typeof networks[network] === 'string') {
+			network = networks[network];
+		}
+		if (typeof networks[network] !== 'function') {
+			return;
+		}
 
 		// create the button elements
 		var	container = doc.createElement('div'),
@@ -259,19 +275,24 @@ window.Socialite = (function()
 		networks[network](instance, _socialite);
 	};
 
-	// allow users to extend the list of supported networks
+	// extend the list of supported networks
 	Socialite.extend = function(network, callback, source)
 	{
 		if (typeof network !== 'string' || typeof callback !== 'function') {
 			return false;
 		}
-		if (networks[network] !== undefined) {
+		// split into an array to map multiple classes to one network
+		network = (network.indexOf(' ') > 0) ? network.split(' ') : [network];
+		if (networks[network[0]] !== undefined) {
 			return false;
 		}
-		if (source !== undefined && typeof source === 'string') {
-			sources[network] = source;
+		for (var i = 1; i < network.length; i++) {
+			networks[network[i]] = network[0];
 		}
-		networks[network] = callback;
+		if (source !== undefined && typeof source === 'string') {
+			sources[network[0]] = source;
+		}
+		networks[network[0]] = callback;
 		return true;
 	};
 
@@ -293,13 +314,36 @@ window.Socialite = (function()
 
 	// Twitter
 	// https://twitter.com/about/resources/
-	s.extend('twitter', function(instance, _s)
+	s.extend('twitter tweet', function(instance, _s)
 	{
-		if ( ! _s.hasLoaded('twitter')) {
-			var el = document.createElement('a');
-			el.className = 'twitter-share-button';
+		var cn = ' ' + instance.elem.className + ' ';
+		if (cn.indexOf(' tweet ') !== -1) {
+			instance.elem.className = 'twitter-tweet';
+		} else {
+			var	el = document.createElement('a'),
+				dt = instance.elem.getAttribute('data-type'),
+				tc = ['share', 'follow', 'hashtag', 'mention'],
+				ti = 0;
+			for (var i = 1; i < 4; i++) {
+				if (dt === tc[i] || cn.indexOf(' ' + tc[i] + ' ') !== -1) {
+					ti = i;
+				}
+			}
+			el.className = 'twitter-' + tc[ti] + '-button';
+			if (instance.elem.getAttribute('href') !== undefined) {
+				el.setAttribute('href', instance.elem.href);
+			}
 			_s.copyDataAttributes(instance.elem, el);
 			instance.button.replaceChild(el, instance.elem);
+		}
+		var twttr = window.twttr;
+		if (typeof twttr === 'object' && typeof twttr.widgets === 'object' && typeof twttr.widgets.load === 'function') {
+			twttr.widgets.load();
+			_s.activateInstance(instance);
+		} else {
+			if (_s.hasLoaded('twitter')) {
+				_s.removeScript('twitter');
+			}
 			if (_s.appendScript('twitter', 'twitter-wjs', false)) {
 				window.twttr = {
 					_e: [function() {
@@ -307,11 +351,6 @@ window.Socialite = (function()
 					}]
 				};
 			}
-		} else {
-			var src = '//platform.twitter.com/widgets/tweet_button.html?';
-			src += _s.getDataAttributes(instance.elem, true);
-			var iframe = _s.createIframe(src, instance);
-			instance.button.replaceChild(iframe, instance.elem);
 		}
 	}, '//platform.twitter.com/widgets.js');
 
@@ -369,18 +408,5 @@ window.Socialite = (function()
 			}
 		}
 	}, '//platform.linkedin.com/in.js');
-
-	// StumbleUpon
-	// http://www.stumbleupon.com/badges/
-	s.extend('stumbleupon', function(instance, _s)
-	{
-		var r = instance.elem.attributes['data-r'] ? instance.elem.attributes['data-r'].value : '1';
-		var src = '//www.stumbleupon.com/badge/embed/' + r + '/?';
-		instance.elem.removeAttribute('data-r');
-		src += _s.getDataAttributes(instance.elem, true);
-		var iframe = _s.createIframe(src, instance);
-		instance.button.replaceChild(iframe, instance.elem);
-	});
-
 
 })();
