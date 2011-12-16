@@ -16,7 +16,7 @@ h2 { font-size: 1.25em; line-height: 1.333em; margin: 0.5em 0; }
 
 .socialite-button { display: none; opacity: 0; }
 .socialite-loaded .socialite-button { display: block; opacity: 1; }
-.socialite-button iframe { max-width: 100%; }
+.socialite-button iframe { max-width: 100%; max-height: 100%; }
 
 /*
  * Socialite Look-a-like defaults

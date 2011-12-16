@@ -295,7 +295,7 @@ window.Socialite = (function()
 	// https://twitter.com/about/resources/
 	s.extend('twitter', function(instance, _s)
 	{
-		if (false && ! _s.hasLoaded('twitter')) {
+		if ( ! _s.hasLoaded('twitter')) {
 			var el = document.createElement('a');
 			el.className = 'twitter-share-button';
 			_s.copyDataAttributes(instance.elem, el);
@@ -323,12 +323,12 @@ window.Socialite = (function()
 		el.className = 'g-plusone';
 		_s.copyDataAttributes(instance.elem, el);
 		instance.button.replaceChild(el, instance.elem);
-		if ( ! _s.hasLoaded('plusone')) {
-			_s.appendScript('plusone');
+		if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.render === 'function') {
+			window.gapi.plusone.render(instance.button, _s.getDataAttributes(el, true, true));
+			_s.activateInstance(instance);
 		} else {
-			if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.render === 'function') {
-				window.gapi.plusone.render(instance.button, _s.getDataAttributes(el, true, true));
-				_s.activateInstance(instance);
+			if ( ! _s.hasLoaded('plusone')) {
+				_s.appendScript('plusone');
 			}
 		}
 	}, '//apis.google.com/js/plusone.js');
@@ -360,12 +360,12 @@ window.Socialite = (function()
 		el.type = 'IN/Share';
 		_s.copyDataAttributes(instance.elem, el);
 		instance.button.replaceChild(el, instance.elem);
-		if (!_s.hasLoaded('linkedin')) {
-			_s.appendScript('linkedin');
+		if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
+			window.IN.init();
+			_s.activateInstance(instance);
 		} else {
-			if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
-				window.IN.init();
-				_s.activateInstance(instance);
+			if (!_s.hasLoaded('linkedin')) {
+				_s.appendScript('linkedin');
 			}
 		}
 	}, '//platform.linkedin.com/in.js');
