@@ -31,7 +31,7 @@ h2 { font-size: 1.25em; line-height: 1.333em; margin: 0.5em 0; }
 .social-buttons .socialite span { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
 /* fallback for default and non-loaded instances */
 .social-buttons .twitter { width: 55px; height: 65px; background-position: 0 0; }
-.social-buttons .plusone { width: 50px; height: 65px; background-position: -75px 0; }
+.social-buttons .googleplus { width: 50px; height: 65px; background-position: -75px 0; }
 .social-buttons .facebook { width: 50px; height: 65px; background-position: -145px 0; }
 .social-buttons .linkedin { width: 60px; height: 65px; background-position: -215px 0; }
 .social-buttons .stumbleupon { width: 50px; height: 65px; background-position: -295px 0; }

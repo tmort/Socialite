@@ -275,7 +275,7 @@ window.Socialite = (function()
 		networks[network](instance, _socialite);
 	};
 
-	// extend the list of supported networks
+	// extend the array of supported networks
 	Socialite.extend = function(network, callback, source)
 	{
 		if (typeof network !== 'string' || typeof callback !== 'function') {
@@ -355,8 +355,8 @@ window.Socialite = (function()
 	}, '//platform.twitter.com/widgets.js');
 
 	// Google+
-	//https://developers.google.com/+/plugins/+1button/
-	s.extend('plusone', function(instance, _s)
+	// https://developers.google.com/+/plugins/+1button/
+	s.extend('googleplus', function(instance, _s)
 	{
 		var el = document.createElement('div');
 		el.className = 'g-plusone';
@@ -366,8 +366,8 @@ window.Socialite = (function()
 			window.gapi.plusone.render(instance.button, _s.getDataAttributes(el, true, true));
 			_s.activateInstance(instance);
 		} else {
-			if ( ! _s.hasLoaded('plusone')) {
-				_s.appendScript('plusone');
+			if ( ! _s.hasLoaded('googleplus')) {
+				_s.appendScript('googleplus');
 			}
 		}
 	}, '//apis.google.com/js/plusone.js');

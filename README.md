@@ -12,25 +12,28 @@ Copyright © 2012
 
 ## Features and Benefits
 
-* No more tedious copy/paste!
-* No dependencies to use.
+* No dependencies to use.</li>
 * Loads external resources only when needed.
 * Less than 2kb when minified and compressed.
 * More accessible and styleable defaults/fallbacks.
-* Built in support for Twitter, Google+, Facebook and LinkedIn.
-* Extendable with other social networks.
+* Support for Twitter, Google+, Facebook and LinkedIn.
+* Extensible with other social networks.
 * Mimics native implementation when activated.
 * Supported in all browsers (providing the buttons are).
 
 ## Setup
 
-All you need to do is create an element with the class `socialite` and a class like `twitter` to specify the social network. Best practice is to provide an accessible fallback URL like this:
+Create an element with the class `socialite` and a class like `twitter` to specify a social network. Best practice is to provide an accessible fallback URL like this:
 
-	<a href="http://twitter.com/share" class="socialite twitter" data-url="http://socialitejs.com" rel="nofollow" target="_blank">
+	<a class="socialite twitter" href="http://twitter.com/share" data-url="http://socialitejs.com">
 		Share on Twitter
 	</a>
 
-Use `data-*` attributes to configure your button. These configurations directly correlate to the individual network implementations, so while Twitter uses `data-url`, Facebook uses `data-href`. Not ideal but I'd rather keep this script very small! You can style the defauls however you like. See [http://socialitejs.com](http://socialitejs.com) for demos.
+Use `data-*` attributes to configure your button. These configurations directly correlate to the individual network implementations, so while (Twitter)[https://twitter.com/about/resources/] uses `data-url`, (Facebook)[http://developers.facebook.com/docs/reference/plugins/like/] uses `data-href`. Not ideal but I'd rather keep this script very small! You can style the defauls however you like. See [http://socialitejs.com](http://socialitejs.com) for demos.
+
+Supported network classes are currently: `twitter`, `googleplus`, `facebook` and `linkedin`. For other (Twitter buttons)[https://twitter.com/about/resources/] add an extra class of either `follow`, `hashtag` or `mention`. For [Embedded Tweets](https://dev.twitter.com/docs/embedded-tweets) copy the `<blockquote>` code provided by Twitter and replace the class attribute with `socialite tweet`.
+
+For all options visit (Twitter)[https://twitter.com/about/resources/], (Google+)[https://developers.google.com/+/plugins/+1button/], (Facebook)[http://developers.facebook.com/docs/reference/plugins/like/] and (LinkedIn)[http://developer.linkedin.com/plugins/share-button/].
 
 Include **socialite.js** right at the end of your document (before `</body>`) and activate with the options below:
 
@@ -52,7 +55,7 @@ Be kind! Provide an element to search within using `context` rather than the who
 
 	Socialite.activate(element, 'network');
 
-`activate` replaces a single element (or an array of) with the specific social network button. The following are built in by default: `twitter`, `plusone`, `facebook`, `linkedin`.
+`activate` replaces a single element (or an array of) with the specific social network button.
 
 ### Extend
 
@@ -60,10 +63,6 @@ Be kind! Provide an element to search within using `context` rather than the who
 
 With `extend` you can add more social networks! The `function` is called by `Socialite.load` and `Socialite.activate` to replace the default element with the shiny sharing button.
 
-## Things To Do...
-
-* Add more extensions!
-* will events be useful?
-* can I do a better check for script loading and activation? e.g. for smooth transitions from defaults.
+## Contribute
 
 Send me feedback and testing issues!
