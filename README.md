@@ -29,11 +29,11 @@ Create an element with the class `socialite` and a class like `twitter` to speci
 		Share on Twitter
 	</a>
 
-Use `data-*` attributes to configure your button. These configurations directly correlate to the individual network implementations, so while (Twitter)[https://twitter.com/about/resources/] uses `data-url`, (Facebook)[http://developers.facebook.com/docs/reference/plugins/like/] uses `data-href`. Not ideal but I'd rather keep this script very small! You can style the defauls however you like. See [http://socialitejs.com](http://socialitejs.com) for demos.
+Use `data-*` attributes to configure your button. These configurations directly correlate to the individual network implementations, so while [Twitter](https://twitter.com/about/resources/) uses `data-url`, [Facebook](http://developers.facebook.com/docs/reference/plugins/like/) uses `data-href`. Not ideal but I'd rather keep this script very small! You can style the defauls however you like. See [http://socialitejs.com](http://socialitejs.com) for demos.
 
-Supported network classes are currently: `twitter`, `googleplus`, `facebook` and `linkedin`. For other (Twitter buttons)[https://twitter.com/about/resources/] add an extra class of either `follow`, `hashtag` or `mention`. For [Embedded Tweets](https://dev.twitter.com/docs/embedded-tweets) copy the `<blockquote>` code provided by Twitter and replace the class attribute with `socialite tweet`.
+Supported network classes are currently: `twitter`, `googleplus`, `facebook` and `linkedin`. For other [Twitter buttons](https://twitter.com/about/resources/) add an extra class of either `follow`, `hashtag` or `mention`. For [Embedded Tweets](https://dev.twitter.com/docs/embedded-tweets) copy the `<blockquote>` code provided by Twitter and replace the class attribute with `socialite tweet`.
 
-For all options visit (Twitter)[https://twitter.com/about/resources/], (Google+)[https://developers.google.com/+/plugins/+1button/], (Facebook)[http://developers.facebook.com/docs/reference/plugins/like/] and (LinkedIn)[http://developer.linkedin.com/plugins/share-button/].
+For all options visit [Twitter](https://twitter.com/about/resources/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/) and [LinkedIn](http://developer.linkedin.com/plugins/share-button/).
 
 Include **socialite.js** right at the end of your document (before `</body>`) and activate with the options below:
 
