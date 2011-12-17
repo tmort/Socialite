@@ -142,10 +142,10 @@ window.Socialite = (function()
 			if (attr[i].name.indexOf('data-') === 0 && attr[i].value.length) {
 				var key = attr[i].name;
 				var val = attr[i].value;
-				if (noprefix === true) {
+				if (noprefix) {
 					key = key.substring(5);
 				}
-				if (nostr === true) {
+				if (nostr) {
 					obj[key] = val;
 				} else {
 					str += euc(key) + '=' + euc(val) + '&';
