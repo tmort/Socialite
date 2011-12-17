@@ -1,6 +1,6 @@
 /*
  * Socialite v1.0
- * http://www.socialitejs.com
+ * http://socialitejs.com
  * Copyright (c) 2011 David Bushell
  * Dual-licensed under the BSD or MIT licenses: http://socialitejs.com/license.txt
  */
@@ -30,12 +30,12 @@ window.Socialite = (function()
 	// append a known script element once
 	_socialite.appendScript = function(network, id, callback)
 	{
-		if (typeof network !== 'string' || appended[network] || sources[network] === undefined) {
+		if (appended[network] || sources[network] === undefined) {
 			return false;
 		}
 		var js = appended[network] = doc.createElement('script');
 		js.async = true;
-		js.src = js.data = sources[network];
+		js.src = sources[network];
 		js.onload = js.onreadystatechange = function ()
 		{
 			if (_socialite.hasLoaded(network)) {
@@ -117,8 +117,7 @@ window.Socialite = (function()
 	_socialite.activateCache = function(network)
 	{
 		if (cache[network] !== undefined) {
-			var len = cache[network].length;
-			for (var i = 0; i < len; i++) {
+			for (var i = 0; i < cache[network].length; i++) {
 				_socialite.activateInstance(cache[network][i]);
 			}
 		}
