@@ -33,7 +33,7 @@ Use `data-*` attributes to configure your button. These configurations directly 
 
 Supported network classes are currently: `twitter`, `googleplus`, `facebook` and `linkedin`. For other [Twitter buttons](https://twitter.com/about/resources/) add an extra class of either `follow`, `hashtag` or `mention`. For [Embedded Tweets](https://dev.twitter.com/docs/embedded-tweets) copy the `<blockquote>` code provided by Twitter and replace the class attribute with `socialite tweet`.
 
-For all individual button configurations visit [Twitter](https://twitter.com/about/resources/buttons/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/) and [LinkedIn](http://developer.linkedin.com/plugins/share-button/). **Important:** you don't need the code provided by these networks, Socialite does that for you!
+For all individual button configurations visit [Twitter](https://twitter.com/about/resources/buttons/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/) and [LinkedIn](http://developer.linkedin.com/plugins/share-button/). **Important:** don't include the scripts provided by these networks, Socialite does that for you!
 
 Include **socialite.js** right at the end of your document (before `</body>`) and activate with the options below:
 
