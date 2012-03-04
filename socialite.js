@@ -415,4 +415,23 @@ window.Socialite = (function(window, document, undefined)
 		}
 	}, '//platform.linkedin.com/in.js');
 
+	// Pinterest "pin It" Button
+	// http://pinterest.com/about/goodies/
+	s.extend('pinit', function(instance, _s)
+	{
+		var instanceElem = instance.elem;
+		var el = document.createElement('a');
+		el.className = 'pin-it-button';
+		if (instanceElem.getAttribute('href') !== undefined) {
+			el.setAttribute('href', instanceElem.href);
+		}
+		var layout = instanceElem.getAttribute('data-count-layout') || 'horizontal';
+		el.setAttribute('count-layout', layout);
+		instance.button.replaceChild(el, instanceElem);
+		if (_s.hasLoaded('pinit')) {
+			_s.removeScript('pinit');
+		}
+		_s.appendScript('pinit');
+	}, '//assets.pinterest.com/js/pinit.js');
+
 })(window, window.document, window.Socialite);
