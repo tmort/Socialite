@@ -35,6 +35,8 @@ Supported network classes are currently: `twitter`, `googleplus`, `facebook`, `l
 
 For all individual button configurations visit [Twitter](https://twitter.com/about/resources/buttons/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/), [LinkedIn](http://developer.linkedin.com/plugins/share-button/) and [Pinterest](http://pinterest.com/about/goodies/). **Important:** don't include the scripts provided by these networks, Socialite does that for you!
 
+For Pinterest's "Pin it" buttons the `url`, `media` and `description` are appended to the URL query string rather than as `data-*` attributes. The only configuration option is `data-count-layout="horizontal"` (or "vertical").
+
 Include **socialite.js** right at the end of your document (before `</body>`) and activate with the options below. ***Please note:*** the minified version supplied here only contains support for Twitter, Google+, Facebook and LinkedIn. For other networks grab `socialite.js` and add/remove the extensions you need.
 
 ## Functions
