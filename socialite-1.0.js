@@ -5,7 +5,7 @@
  * Dual-licensed under the BSD or MIT licenses: http://socialitejs.com/license.txt
  */
 
-window.Socialite = (function()
+window.Socialite = (function(window, document, undefined)
 {
 	var	Socialite = { },
 
@@ -22,10 +22,9 @@ window.Socialite = (function()
 		// all Socialite button instances
 		cache = { },
 
-		doc = window.document,
 		sto = window.setTimeout,
 		euc = encodeURIComponent,
-		gcn = typeof doc.getElementsByClassName === 'function';
+		gcn = typeof document.getElementsByClassName === 'function';
 
 	// append a known script element once
 	_socialite.appendScript = function(network, id, callback)
@@ -33,7 +32,8 @@ window.Socialite = (function()
 		if (appended[network] || sources[network] === undefined) {
 			return false;
 		}
-		var js = appended[network] = doc.createElement('script');
+
+		var js = appended[network] = document.createElement('script');
 		js.async = true;
 		js.src = sources[network];
 		js.onload = js.onreadystatechange = function ()
@@ -55,10 +55,12 @@ window.Socialite = (function()
 				}
 			}
 		};
+
 		if (id) {
 			js.id = id;
 		}
-		doc.body.appendChild(js);
+
+		document.body.appendChild(js);
 		return true;
 	};
 
@@ -73,7 +75,7 @@ window.Socialite = (function()
 		if ( ! _socialite.hasLoaded(network)) {
 			return false;
 		}
-		doc.body.removeChild(appended[network]);
+		document.body.removeChild(appended[network]);
 		appended[network] = loaded[network] = false;
 		return true;
 	};
@@ -81,7 +83,7 @@ window.Socialite = (function()
 	// return an iframe element and activate the instance on load
 	_socialite.createIframe = function(src, instance)
 	{
-		var iframe = doc.createElement('iframe');
+		var iframe = document.createElement('iframe');
 		iframe.style.cssText = 'overflow: hidden; border: none;';
 		iframe.setAttribute('allowtransparency', 'true');
 		iframe.setAttribute('frameborder', '0');
@@ -128,8 +130,10 @@ window.Socialite = (function()
 	{
 		var i, attr = from.attributes;
 		for (i = 0; i < attr.length; i++) {
-			if (attr[i].name.indexOf('data-') === 0 && attr[i].value.length) {
-				to.setAttribute(attr[i].name, attr[i].value);
+			var key = attr[i].name,
+				val = attr[i].value;
+			if (key.indexOf('data-') === 0 && val.length) {
+				to.setAttribute(key, val);
 			}
 		}
 	};
@@ -139,9 +143,10 @@ window.Socialite = (function()
 	{
 		var i, str = '', obj = {}, attr = from.attributes;
 		for (i = 0; i < attr.length; i++) {
-			if (attr[i].name.indexOf('data-') === 0 && attr[i].value.length) {
-				var key = attr[i].name;
-				var val = attr[i].value;
+			var key = attr[i].name,
+				val = attr[i].value;
+			if (key.indexOf('data-') === 0 && val.length) {
+
 				if (noprefix === true) {
 					key = key.substring(5);
 				}
@@ -181,12 +186,14 @@ window.Socialite = (function()
 	Socialite.load = function(context, elem, network)
 	{
 		// if no context use the document
-		context = (typeof context === 'object' && context !== null && context.nodeType === 1) ? context : doc;
+		context = (typeof context === 'object' && context !== null && context.nodeType === 1) ? context : document;
 
 		// if no element then search the context for instances
 		if (elem === undefined || elem === null) {
 			var	find = _socialite.getElements(context, 'socialite'),
-				elems = find, length = find.length;
+				elems = find,
+				length = find.length;
+
 			if (!length) {
 				return;
 			}
@@ -236,15 +243,15 @@ window.Socialite = (function()
 		}
 
 		// create the button elements
-		var	container = doc.createElement('div'),
-			button = doc.createElement('div');
-		container.className = 'socialised ' + network;
-		button.className = 'socialite-button';
+		var	container = document.createElement('div'),
+			button = document.createElement('div');
+			container.className = 'socialised ' + network;
+			button.className = 'socialite-button';
 
 		// insert container before parent element, or append to the context
 		var parent = elem.parentNode;
 		if (parent === null) {
-			parent = (context === doc) ? doc.body : context;
+			parent = (context === document) ? document.body : context;
 			parent.appendChild(container);
 		} else {
 			parent.insertBefore(container, elem);
@@ -298,7 +305,7 @@ window.Socialite = (function()
 	// boom
 	return Socialite;
 
-})();
+})(window, window.document);
 
 
 /*
@@ -306,21 +313,19 @@ window.Socialite = (function()
  *
  */
 
-(function()
+(function(window, document, s, undefined)
 {
-
-	var s = window.Socialite;
-
 	// Twitter
 	// https://twitter.com/about/resources/
 	s.extend('twitter tweet', function(instance, _s)
 	{
-		var cn = ' ' + instance.elem.className + ' ';
+		var instanceElem = instance.elem,
+			cn = ' ' + instanceElem.className + ' ';
 		if (cn.indexOf(' tweet ') !== -1) {
-			instance.elem.className = 'twitter-tweet';
+			instanceElem.className = 'twitter-tweet';
 		} else {
 			var	el = document.createElement('a'),
-				dt = instance.elem.getAttribute('data-type'),
+				dt = instanceElem.getAttribute('data-type'),
 				tc = ['share', 'follow', 'hashtag', 'mention'],
 				ti = 0;
 			for (var i = 1; i < 4; i++) {
@@ -329,11 +334,11 @@ window.Socialite = (function()
 				}
 			}
 			el.className = 'twitter-' + tc[ti] + '-button';
-			if (instance.elem.getAttribute('href') !== undefined) {
-				el.setAttribute('href', instance.elem.href);
+			if (instanceElem.getAttribute('href') !== undefined) {
+				el.setAttribute('href', instanceElem.href);
 			}
-			_s.copyDataAttributes(instance.elem, el);
-			instance.button.replaceChild(el, instance.elem);
+			_s.copyDataAttributes(instanceElem, el);
+			instance.button.replaceChild(el, instanceElem);
 		}
 		var twttr = window.twttr;
 		if (typeof twttr === 'object' && typeof twttr.widgets === 'object' && typeof twttr.widgets.load === 'function') {
@@ -357,10 +362,11 @@ window.Socialite = (function()
 	// https://developers.google.com/+/plugins/+1button/
 	s.extend('googleplus', function(instance, _s)
 	{
-		var el = document.createElement('div');
+		var instanceElem = instance.elem,
+		el = document.createElement('div');
 		el.className = 'g-plusone';
-		_s.copyDataAttributes(instance.elem, el);
-		instance.button.replaceChild(el, instance.elem);
+		_s.copyDataAttributes(instanceElem, el);
+		instance.button.replaceChild(el, instanceElem);
 		if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.render === 'function') {
 			window.gapi.plusone.render(instance.button, _s.getDataAttributes(el, true, true));
 			_s.activateInstance(instance);
@@ -375,17 +381,18 @@ window.Socialite = (function()
 	// http://developers.facebook.com/docs/reference/plugins/like/
 	s.extend('facebook', function(instance, _s)
 	{
-		var el = document.createElement('div');
+		var instanceElem = instance.elem,
+			el = document.createElement('div');
 		if ( ! _s.hasLoaded('facebook')) {
 			el.className = 'fb-like';
-			_s.copyDataAttributes(instance.elem, el);
-			instance.button.replaceChild(el, instance.elem);
+			_s.copyDataAttributes(instanceElem, el);
+			instance.button.replaceChild(el, instanceElem);
 			_s.appendScript('facebook', 'facebook-jssdk');
 		} else {
 			var src = '//www.facebook.com/plugins/like.php?';
-			src += _s.getDataAttributes(instance.elem, true);
+			src += _s.getDataAttributes(instanceElem, true);
 			var iframe = _s.createIframe(src, instance);
-			instance.button.replaceChild(iframe, instance.elem);
+			instance.button.replaceChild(iframe, instanceElem);
 		}
 	}, '//connect.facebook.net/en_US/all.js#xfbml=1');
 
@@ -393,11 +400,12 @@ window.Socialite = (function()
 	// http://developer.linkedin.com/plugins/share-button/
 	s.extend('linkedin', function(instance, _s)
 	{
-		var attr = instance.elem.attributes;
-		var el = document.createElement('script');
+		var instanceElem = instance.elem,
+		attr = instanceElem.attributes,
+		el = document.createElement('script');
 		el.type = 'IN/Share';
-		_s.copyDataAttributes(instance.elem, el);
-		instance.button.replaceChild(el, instance.elem);
+		_s.copyDataAttributes(instanceElem, el);
+		instance.button.replaceChild(el, instanceElem);
 		if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
 			window.IN.init();
 			_s.activateInstance(instance);
@@ -408,4 +416,4 @@ window.Socialite = (function()
 		}
 	}, '//platform.linkedin.com/in.js');
 
-})();
+})(window, window.document, window.Socialite);
