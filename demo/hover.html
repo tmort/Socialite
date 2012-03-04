@@ -8,11 +8,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Socialite.js</title>
 	<link rel="stylesheet" href="demo.css">
+	<!--[if lt IE 9]>
+		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
 </head>
 <body>
 	<div class="text">
-		<h1>Hover Demo</h1>
-		<p><strong>Activate buttons on article hover. Careful! Not all devices have a mouse to trigger the hover event, consider fallbacks.</strong></p>
+		<h1>Scroll Demo</h1>
+		<p><strong>Activate buttons once the parent article is visible.</strong></p>
 	</div>
 
 	<article class="text">
@@ -140,7 +143,7 @@
 		<p>Copyright &copy; <a rel="author" href="http://dbushell.com/">David Bushell</a>
 	</div>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script src="../socialite-1.0.js"></script>
+	<script src="../socialite.js"></script>
 	<script>
 
 	// Only use jQuery if the website already makes extensive use of it!
@@ -148,10 +151,48 @@
 	$(document).ready(function()
 	{
 
-		$('article.text').one('mouseenter', function()
+		var	articles = $('article.text'), socialised = { }, win = $(window), updateArticles, onUpdate, updateTimeout;
+
+		updateArticles = function()
 		{
-			Socialite.load($(this)[0]);
-		});
+			// viewport bounds
+			var	wT = win.scrollTop(),
+				wL = win.scrollLeft(),
+				wR = wL + win.width(),
+				wB = wT + win.height();
+			// check which articles are visible and socialise!
+			for (var i = 0; i < articles.length; i++) {
+				if (socialised[i]) {
+					continue;
+				}
+				// article bounds
+				var	art = $(articles[i]),
+					aT = art.offset().top,
+					aL = art.offset().left,
+					aR = aL + art.width(),
+					aB = aT + art.height();
+				// vertial point inside viewport
+				if ((aT >= wT && aT <= wB) || (aB >= wT && aB <= wB)) {
+					// horizontal point inside viewport
+					if ((aL >= wL && aL <= wR) || (aR >= wL && aR <= wR)) {
+						socialised[i] = true;
+						Socialite.load(articles[i]);
+					}
+				}
+			}
+		};
+
+		onUpdate = function()
+		{
+			if (updateTimeout) {
+				clearTimeout(updateTimeout);
+			}
+			updateTimeout = setTimeout(updateArticles, 100);
+		};
+
+		win.on('resize', onUpdate).on('scroll', onUpdate);
+
+		setTimeout(updateArticles, 100);
 
 	});
 
