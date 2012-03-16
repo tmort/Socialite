@@ -1,4 +1,4 @@
-/*
+/*!
  * Socialite v1.0
  * http://socialitejs.com
  * Copyright (c) 2011 David Bushell
