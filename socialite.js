@@ -362,7 +362,7 @@ window.Socialite = (function(window, document, undefined)
 	s.extend('googleplus', function(instance, _s)
 	{
 		var instanceElem = instance.elem,
-		el = document.createElement('div');
+			el = document.createElement('div');
 		el.className = 'g-plusone';
 		_s.copyDataAttributes(instanceElem, el);
 		instance.button.replaceChild(el, instanceElem);
@@ -406,8 +406,8 @@ window.Socialite = (function(window, document, undefined)
 	s.extend('linkedin', function(instance, _s)
 	{
 		var instanceElem = instance.elem,
-		attr = instanceElem.attributes,
-		el = document.createElement('script');
+			attr = instanceElem.attributes,
+			el = document.createElement('script');
 		el.type = 'IN/Share';
 		_s.copyDataAttributes(instanceElem, el);
 		instance.button.replaceChild(el, instanceElem);
@@ -425,8 +425,8 @@ window.Socialite = (function(window, document, undefined)
 	// http://pinterest.com/about/goodies/
 	s.extend('pinit', function(instance, _s)
 	{
-		var instanceElem = instance.elem;
-		var el = document.createElement('a');
+		var instanceElem = instance.elem,
+			el = document.createElement('a');
 		el.className = 'pin-it-button';
 		if (instanceElem.getAttribute('href') !== undefined) {
 			el.setAttribute('href', instanceElem.href);
@@ -439,5 +439,24 @@ window.Socialite = (function(window, document, undefined)
 		}
 		_s.appendScript('pinit');
 	}, '//assets.pinterest.com/js/pinit.js');
+
+	// Spotify Play Button
+	// https://developer.spotify.com/technologies/spotify-play-button/
+	s.extend('spotify-play', function(instance, _s)
+	{
+		var instanceElem = instance.elem,
+			src = 'https://embed.spotify.com/?',
+			width = parseInt(instanceElem.getAttribute('data-width'), 10),
+			height = parseInt(instanceElem.getAttribute('data-height'), 10);
+		instanceElem.removeAttribute('data-width');
+		instanceElem.removeAttribute('data-height');
+		src += 'uri=' + instanceElem.getAttribute('href') + '&';
+		src += _s.getDataAttributes(instanceElem, true);
+		var iframe = _s.createIframe(src, instance);
+		iframe.style.width = (isNaN(width) ? 300 : width) + 'px';
+		iframe.style.height = (isNaN(height) ? 380 : height) + 'px';
+		instance.button.replaceChild(iframe, instanceElem);
+		_s.activateInstance(instance);
+	}, '');
 
 })(window, window.document, window.Socialite);
