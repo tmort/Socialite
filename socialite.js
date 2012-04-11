@@ -380,15 +380,13 @@ window.Socialite = (function(window, document, undefined)
 	// http://developers.facebook.com/docs/reference/plugins/like/
 	s.extend('facebook', function(instance, _s)
 	{
-		var fbElem = document.getElementById('fb-root'),
-			instanceElem = instance.elem,
-			el = document.createElement('div');
-		if (!fbElem) {
+		var instanceElem = instance.elem,
+			el = document.createElement('div'),
+			fbElem = document.getElementById('fb-root');
+		if (!fbElem && !_s.hasLoaded('facebook')) {
 			fbElem = document.createElement('div');
 			fbElem.id = 'fb-root';
 			document.body.appendChild(fbElem);
-		}
-		if ( ! _s.hasLoaded('facebook')) {
 			el.className = 'fb-like';
 			_s.copyDataAttributes(instanceElem, el);
 			instance.button.replaceChild(el, instanceElem);
