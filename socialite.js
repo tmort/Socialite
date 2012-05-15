@@ -89,18 +89,15 @@ window.Socialite = (function(window, document, undefined)
 		iframe.setAttribute('frameborder', '0');
 		iframe.setAttribute('scrolling', 'no');
 		iframe.setAttribute('src', src);
-		// trigger onLoad after iframe, or on timeout if IE < 9 - is getElementsByClassName an accurate test?
 		if (instance !== undefined) {
-			if (gcn) {
-				iframe.onload = iframe.onreadystatechange = function() {
+			iframe.onload = iframe.onreadystatechange = function ()
+			{
+				var rs = iframe.readyState;
+				if ( ! rs || rs === 'loaded' || rs === 'complete') {
 					iframe.onload = iframe.onreadystatechange = null;
 					_socialite.activateInstance(instance);
-				};
-			} else {
-				sto(function() {
-					_socialite.activateInstance(instance);
-				}, 10);
-			}
+				}
+			};
 		}
 		return iframe;
 	};
