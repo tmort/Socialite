@@ -592,6 +592,7 @@ window.Socialite = (function(window, document, undefined)
 
     // Google+
     // https://developers.google.com/+/plugins/+1button/
+    // Google does not support IE7
 
     Socialite.network('googleplus', {
         script: {
@@ -619,7 +620,9 @@ window.Socialite = (function(window, document, undefined)
         },
         onload: function(instance)
         {
-            window.gapi.plusone.render(instance.el, Socialite.getDataAttributes(instance.el, true, true));
+            if (window.gapi && typeof window.gapi.plusone === 'function') {
+                window.gapi.plusone.render(instance.el, Socialite.getDataAttributes(instance.el, true, true));
+            }
         }
     });
 
@@ -633,7 +636,9 @@ window.Socialite = (function(window, document, undefined)
         },
         onload: function(instance)
         {
-            window.gapi.plus.render(instance.el, Socialite.getDataAttributes(instance.el, true, true));
+            if (window.gapi && typeof window.gapi.plus === 'function') {
+                window.gapi.plus.render(instance.el, Socialite.getDataAttributes(instance.el, true, true));
+            }
         }
     });
 
@@ -647,33 +652,20 @@ window.Socialite = (function(window, document, undefined)
         }
     });
 
-    Socialite.widget('linkedin', 'share', {
-        init: function(instance)
-        {
+    var innitLinkedin = function(instance)
+    {
             var el = document.createElement('script');
-            el.type = 'IN/Share';
+            el.type = 'IN/' + instance.widget.intype;
             Socialite.copyDataAttributes(instance.el, el);
             instance.el.appendChild(el);
             if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
                 window.IN.init();
                 Socialite.activateInstance(instance);
             }
-        }
-    });
+    };
 
-    Socialite.widget('linkedin', 'recommend', {
-        init: function(instance)
-        {
-            var el = document.createElement('script');
-            el.type = 'IN/RecommendProduct';
-            Socialite.copyDataAttributes(instance.el, el);
-            instance.el.appendChild(el);
-            if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
-                window.IN.init();
-                Socialite.activateInstance(instance);
-            }
-        }
-    });
+    Socialite.widget('linkedin', 'share',     { init: innitLinkedin, intype: 'Share' });
+    Socialite.widget('linkedin', 'recommend', { init: innitLinkedin, intype: 'RecommendProduct' });
 
 
     // Pinterest "pin It" Button
@@ -688,6 +680,8 @@ window.Socialite = (function(window, document, undefined)
     Socialite.widget('pinterest', 'pinit', {
         process: function(instance)
         {
+            // Pinterest activates all <a> elements with a href containing share URL
+            // so we have to jump through hoops to protect each instance
             if (instance.el.nodeName.toLowerCase() !== 'a') {
                 return true;
             }
