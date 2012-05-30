@@ -664,14 +664,14 @@ window.Socialite = (function(window, document, undefined)
 
     var linkedinInit = function(instance)
     {
-            var el = document.createElement('script');
-            el.type = 'IN/' + instance.widget.intype;
-            Socialite.copyDataAttributes(instance.el, el);
-            instance.el.appendChild(el);
-            if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
-                window.IN.init();
-                Socialite.activateInstance(instance);
-            }
+        var el = document.createElement('script');
+        el.type = 'IN/' + instance.widget.intype;
+        Socialite.copyDataAttributes(instance.el, el);
+        instance.el.appendChild(el);
+        if (typeof window.IN === 'object' && typeof window.IN.parse === 'function') {
+            window.IN.parse(instance.el);
+            Socialite.activateInstance(instance);
+        }
     };
 
     Socialite.widget('linkedin', 'share',     { init: linkedinInit, intype: 'Share' });
