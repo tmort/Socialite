@@ -524,7 +524,9 @@ window.Socialite = (function(window, document, undefined)
 
 
     // Twitter
-    // https://twitter.com/about/resources/
+    // https://dev.twitter.com/docs/tweet-button/
+    // https://dev.twitter.com/docs/intents/events/
+    // https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingSocial#twitter
 
     Socialite.network('twitter', {
         script: {
@@ -534,11 +536,23 @@ window.Socialite = (function(window, document, undefined)
         },
         onappend: function()
         {
-            if (window.twttr) {
-                return false;
-            } else {
-                window.twttr = { _e: [ function() { Socialite.activateAll('twitter'); } ] };
+            var notwttr  = (typeof window.twttr !== 'object'),
+                settings = Socialite.settings['twitter'],
+                events   = ['click', 'tweet', 'retweet', 'favorite', 'follow'];
+            if (notwttr) {
+                window.twttr = (t = { _e: [], ready: function(f) { t._e.push(f); } });
             }
+            window.twttr.ready(function(twttr)
+            {
+                for (var i = 0; i < events.length; i++) {
+                    var e = events[i];
+                    if (typeof settings[e] === 'function') {
+                        twttr.events.bind(e, settings[e]);
+                    }
+                }
+                Socialite.activateAll('twitter');
+            });
+            return notwttr;
         }
     });
 
