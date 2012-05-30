@@ -652,7 +652,7 @@ window.Socialite = (function(window, document, undefined)
         }
     });
 
-    var innitLinkedin = function(instance)
+    var initLinkedin = function(instance)
     {
             var el = document.createElement('script');
             el.type = 'IN/' + instance.widget.intype;
@@ -664,8 +664,8 @@ window.Socialite = (function(window, document, undefined)
             }
     };
 
-    Socialite.widget('linkedin', 'share',     { init: innitLinkedin, intype: 'Share' });
-    Socialite.widget('linkedin', 'recommend', { init: innitLinkedin, intype: 'RecommendProduct' });
+    Socialite.widget('linkedin', 'share',     { init: initLinkedin, intype: 'Share' });
+    Socialite.widget('linkedin', 'recommend', { init: initLinkedin, intype: 'RecommendProduct' });
 
 
     // Pinterest "pin It" Button
