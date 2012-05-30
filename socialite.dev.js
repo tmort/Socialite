@@ -610,37 +610,24 @@ window.Socialite = (function(window, document, undefined)
         }
     });
 
-    Socialite.widget('googleplus', 'one', {
-        init: function(instance)
-        {
-            var el = document.createElement('div');
-            el.className = 'g-plusone';
-            Socialite.copyDataAttributes(instance.el, el);
-            instance.el.appendChild(el);
-        },
-        onload: function(instance)
-        {
-            if (window.gapi && typeof window.gapi.plusone === 'function') {
-                window.gapi.plusone.render(instance.el, Socialite.getDataAttributes(instance.el, true, true));
-            }
-        }
-    });
+    var googleplusInit = function(instance)
+    {
+        var el = document.createElement('div');
+        el.className = 'g-' + instance.widget.gtype;
+        Socialite.copyDataAttributes(instance.el, el);
+        instance.el.appendChild(el);
+    };
 
-    Socialite.widget('googleplus', 'share', {
-        init: function(instance)
-        {
-            var el = document.createElement('div');
-            el.className = 'g-plus';
-            Socialite.copyDataAttributes(instance.el, el);
-            instance.el.appendChild(el);
-        },
-        onload: function(instance)
-        {
-            if (window.gapi && typeof window.gapi.plus === 'function') {
-                window.gapi.plus.render(instance.el, Socialite.getDataAttributes(instance.el, true, true));
-            }
+    var googleplusLoad = function(instance)
+    {
+        var type = instance.widget.gtype;
+        if (window.gapi && window.gapi[type]) {
+            window.gapi[type].render(instance.el, Socialite.getDataAttributes(instance.el, true, true));
         }
-    });
+    };
+
+    Socialite.widget('googleplus', 'one',   { init: googleplusInit, onload: googleplusLoad, gtype: 'plusone' });
+    Socialite.widget('googleplus', 'share', { init: googleplusInit, onload: googleplusLoad, gtype: 'plus' });
 
 
     // LinkedIn
@@ -652,7 +639,7 @@ window.Socialite = (function(window, document, undefined)
         }
     });
 
-    var initLinkedin = function(instance)
+    var linkedinInit = function(instance)
     {
             var el = document.createElement('script');
             el.type = 'IN/' + instance.widget.intype;
@@ -664,8 +651,8 @@ window.Socialite = (function(window, document, undefined)
             }
     };
 
-    Socialite.widget('linkedin', 'share',     { init: initLinkedin, intype: 'Share' });
-    Socialite.widget('linkedin', 'recommend', { init: initLinkedin, intype: 'RecommendProduct' });
+    Socialite.widget('linkedin', 'share',     { init: linkedinInit, intype: 'Share' });
+    Socialite.widget('linkedin', 'recommend', { init: linkedinInit, intype: 'RecommendProduct' });
 
 
     // Pinterest "pin It" Button
