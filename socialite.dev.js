@@ -622,7 +622,16 @@ window.Socialite = (function(window, document, undefined)
     {
         var type = instance.widget.gtype;
         if (window.gapi && window.gapi[type]) {
-            window.gapi[type].render(instance.el, Socialite.getDataAttributes(instance.el, true, true));
+            var settings = Socialite.settings['googleplus'],
+                params   = Socialite.getDataAttributes(instance.el, true, true),
+                events   = ['onstartinteraction', 'onendinteraction', 'callback'];
+            for (var i = 0; i < events.length; i++) {
+                var func = settings[events[i]];
+                params[events[i]] = (typeof func !== 'function') ? null : function(data) {
+                    func(instance.el, data);
+                };
+            }
+            window.gapi[type].render(instance.el, params);
         }
     };
 
