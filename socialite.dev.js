@@ -265,8 +265,8 @@ window.Socialite = (function(window, document, undefined)
         {
             if (instance && !instance.loaded) {
                 instance.loaded = true;
-                if (typeof instance.widget.onload === 'function') {
-                    instance.widget.onload(instance);
+                if (typeof instance.widget.activate === 'function') {
+                    instance.widget.activate(instance);
                 }
                 socialite.addClass(instance.el, 'socialite-loaded');
                 return instance.onload ? instance.onload(instance.el) : null;
@@ -565,17 +565,17 @@ window.Socialite = (function(window, document, undefined)
         instance.el.appendChild(el);
     };
 
-    var twitterLoad = function(instance)
+    var twitterActivate = function(instance)
     {
         if (window.twttr && typeof window.twttr.widgets === 'object' && typeof window.twttr.widgets.load === 'function') {
             window.twttr.widgets.load();
         }
     };
 
-    Socialite.widget('twitter', 'share',   { init: twitterInit, onload: twitterLoad });
-    Socialite.widget('twitter', 'follow',  { init: twitterInit, onload: twitterLoad });
-    Socialite.widget('twitter', 'hashtag', { init: twitterInit, onload: twitterLoad });
-    Socialite.widget('twitter', 'mention', { init: twitterInit, onload: twitterLoad });
+    Socialite.widget('twitter', 'share',   { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'follow',  { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'hashtag', { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'mention', { init: twitterInit, activate: twitterActivate });
 
     Socialite.widget('twitter', 'embed',   {
         process: function(instance)
@@ -594,7 +594,7 @@ window.Socialite = (function(window, document, undefined)
         {
             instance.innerEl.className = 'twitter-tweet';
         },
-        onload: twitterLoad
+        activate: twitterActivate
     });
 
 
@@ -632,7 +632,7 @@ window.Socialite = (function(window, document, undefined)
         };
     };
 
-    var googleplusLoad = function(instance)
+    var googleplusActivate = function(instance)
     {
         var type = instance.widget.gtype;
         if (window.gapi && window.gapi[type]) {
@@ -646,8 +646,8 @@ window.Socialite = (function(window, document, undefined)
         }
     };
 
-    Socialite.widget('googleplus', 'one',   { init: googleplusInit, onload: googleplusLoad, gtype: 'plusone' });
-    Socialite.widget('googleplus', 'share', { init: googleplusInit, onload: googleplusLoad, gtype: 'plus' });
+    Socialite.widget('googleplus', 'one',   { init: googleplusInit, activate: googleplusActivate, gtype: 'plusone' });
+    Socialite.widget('googleplus', 'share', { init: googleplusInit, activate: googleplusActivate, gtype: 'plus' });
 
 
     // LinkedIn
