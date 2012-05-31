@@ -179,8 +179,8 @@ window.Socialite = (function(window, document, undefined)
                     if (rstate.test(network.el.readyState || '')) {
                         network.el.onload = network.el.onreadystatechange = null;
                         network.loaded = true;
-                        if (typeof network.onload === 'function') {
-                            network.onload(network);
+                        if (typeof network.onload === 'function' && network.onload(network) === false) {
+                            return;
                         }
                         socialite.activateAll(network);
                     }
@@ -367,7 +367,7 @@ window.Socialite = (function(window, document, undefined)
                 socialite.appendNetwork(widget.network);
             } else {
                 if (socialite.networkReady(widget.network.name)) {
-                    socialite.activateAll(widget.network);
+                    socialite.activateInstance(instance);
                 }
             }
         },
@@ -566,13 +566,8 @@ window.Socialite = (function(window, document, undefined)
 
     var twitterLoad = function(instance)
     {
-        if (twttr && typeof twttr.widgets === 'object' && typeof twttr.widgets.load === 'function') {
-            twttr.widgets.load();
-            Socialite.activateInstance(instance);
-        } else {
-            if (Socialite.networkReady('twitter')) {
-                Socialite.reloadNetwork('twitter');
-            }
+        if (window.twttr && typeof window.twttr.widgets === 'object' && typeof window.twttr.widgets.load === 'function') {
+            window.twttr.widgets.load();
         }
     };
 
@@ -630,6 +625,12 @@ window.Socialite = (function(window, document, undefined)
         instance.el.appendChild(el);
     };
 
+    var googleplusEvent = function(instance, callback) {
+        return (typeof callback !== 'function') ? null : function(data) {
+            callback(instance.el, data);
+        };
+    };
+
     var googleplusLoad = function(instance)
     {
         var type = instance.widget.gtype;
@@ -638,10 +639,7 @@ window.Socialite = (function(window, document, undefined)
                 params   = Socialite.getDataAttributes(instance.el, true, true),
                 events   = ['onstartinteraction', 'onendinteraction', 'callback'];
             for (var i = 0; i < events.length; i++) {
-                var func = settings[events[i]];
-                params[events[i]] = (typeof func !== 'function') ? null : function(data) {
-                    func(instance.el, data);
-                };
+                params[events[i]] = googleplusEvent(instance, settings[events[i]]);
             }
             window.gapi[type].render(instance.el, params);
         }
