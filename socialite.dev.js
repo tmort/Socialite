@@ -489,7 +489,7 @@ window.Socialite = (function(window, document, undefined)
         {
             var fb       = document.createElement('div'),
                 settings = Socialite.settings['facebook'],
-                events   = { like: 'edge.create', unlike: 'edge.remove', send: 'message.send' };
+                events   = { onlike: 'edge.create', onunlike: 'edge.remove', onsend: 'message.send' };
             fb.id = 'fb-root';
             document.body.appendChild(fb);
             network.script.src = network.script.src.replace('{{language}}', settings.lang);
@@ -544,8 +544,8 @@ window.Socialite = (function(window, document, undefined)
             {
                 for (var i = 0; i < events.length; i++) {
                     var e = events[i];
-                    if (typeof settings[e] === 'function') {
-                        twttr.events.bind(e, settings[e]);
+                    if (typeof settings['on' + e] === 'function') {
+                        twttr.events.bind(e, settings['on' + e]);
                     }
                 }
                 Socialite.activateAll('twitter');
