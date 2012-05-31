@@ -164,7 +164,7 @@ window.Socialite = (function(window, document, undefined)
             if (!network || network.appended) {
                 return;
             }
-            if (typeof network.onappend === 'function' && network.onappend(network) === false) {
+            if (typeof network.append === 'function' && network.append(network) === false) {
                 network.appended = network.loaded = true;
                 socialite.activateAll(network);
                 return;
@@ -204,6 +204,7 @@ window.Socialite = (function(window, document, undefined)
 
         /**
          * Remove and re-append network script to the document
+         * This is a last-ditch effort for half-baked scripts
          */
         reloadNetwork: function(name)
         {
@@ -485,7 +486,7 @@ window.Socialite = (function(window, document, undefined)
             src : '//connect.facebook.net/{{language}}/all.js',
             id  : 'facebook-jssdk'
         },
-        onappend: function(network)
+        append: function(network)
         {
             var fb       = document.createElement('div'),
                 settings = Socialite.settings['facebook'],
@@ -532,7 +533,7 @@ window.Socialite = (function(window, document, undefined)
             id      : 'twitter-wjs',
             charset : 'utf-8'
         },
-        onappend: function()
+        append: function()
         {
             var notwttr  = (typeof window.twttr !== 'object'),
                 settings = Socialite.settings['twitter'],
@@ -605,7 +606,7 @@ window.Socialite = (function(window, document, undefined)
         script: {
             src: '//apis.google.com/js/plusone.js'
         },
-        onappend: function(network)
+        append: function(network)
         {
             if (window.gapi) {
                 return false;
