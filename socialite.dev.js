@@ -461,6 +461,7 @@ window.Socialite = (function(window, document, undefined)
 (function(window, document, Socialite, undefined)
 {
 
+    // default to the Queen's English
     Socialite.setup({
         facebook: {
             lang: 'en_GB',
@@ -477,47 +478,44 @@ window.Socialite = (function(window, document, undefined)
 
     // Facebook
     // http://developers.facebook.com/docs/reference/plugins/like/
+    // http://developers.facebook.com/docs/reference/javascript/FB.init/
 
     Socialite.network('facebook', {
         script: {
-            src : '//connect.facebook.net/{{language}}/all.js#xfbml=1{{appId}}',
+            src : '//connect.facebook.net/{{language}}/all.js',
             id  : 'facebook-jssdk'
         },
         onappend: function(network)
         {
-            var fb = document.getElementById('fb-root');
-            if (!fb) {
-                fb = document.createElement('div');
-                fb.id = 'fb-root';
-                document.body.appendChild(fb);
-            }
-            var appId = Socialite.settings['facebook'].appId || '',
-                src   = network.script.src.replace('{{appId}}', appId ? '&appId=' + appId : '');
-            src = src.replace('{{language}}', Socialite.settings['facebook'].lang);
-            network.script.src = src;
+            var fb       = document.createElement('div'),
+                settings = Socialite.settings['facebook'],
+                events   = { like: 'edge.create', unlike: 'edge.remove', send: 'message.send' };
+            fb.id = 'fb-root';
+            document.body.appendChild(fb);
+            network.script.src = network.script.src.replace('{{language}}', settings.lang);
+            window.fbAsyncInit = function() {
+                FB.init({
+                      appId: settings.appId,
+                      xfbml: true
+                });
+                for (var e in events) {
+                    if (typeof settings[e] === 'function') {
+                        FB.Event.subscribe(events[e], settings[e]);
+                    }
+                }
+            };
         }
     });
 
     Socialite.widget('facebook', 'like', {
         init: function(instance)
         {
-            var el;
-            // if network has already loaded try XFBML or resort to iframe
-            if (Socialite.networkReady('facebook')) {
-                if (window.FB && window.FB.XFBML) {
-                    el = document.createElement('fb:like');
-                    Socialite.copyDataAttributes(instance.el, el, true, true);
-                    instance.el.appendChild(el);
-                    window.FB.XFBML.parse(instance.el);
-                } else {
-                    instance.el.appendChild(Socialite.createIframe('//www.facebook.com/plugins/like.php?locale=' + Socialite.settings['facebook'].lang + '&' + Socialite.getDataAttributes(instance.el, true), instance));
-                }
-            // otherwise let network sweep up onload
-            } else {
-                el = document.createElement('div');
-                el.className = 'fb-like';
-                Socialite.copyDataAttributes(instance.el, el);
-                instance.el.appendChild(el);
+            var el = document.createElement('div');
+            el.className = 'fb-like';
+            Socialite.copyDataAttributes(instance.el, el);
+            instance.el.appendChild(el);
+            if (window.FB && window.FB.XFBML) {
+                window.FB.XFBML.parse(instance.el);
             }
         }
     });
