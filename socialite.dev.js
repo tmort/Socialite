@@ -64,6 +64,7 @@ window.Socialite = (function(window, document, undefined)
          */
         getElements: function(context, cn)
         {
+            // copy to a new array to avoid a live NodeList
             var i   = 0,
                 el  = [ ],
                 gcn = !!context.getElementsByClassName,
@@ -118,6 +119,7 @@ window.Socialite = (function(window, document, undefined)
          */
         copyDataAttributes: function(from, to, noprefix, nohyphen)
         {
+            // `nohyphen` was needed for Facebook's <fb:like> elements - remove as no longer used?
             var attr = socialite.getDataAttributes(from, noprefix, true);
             for (var i in attr) {
                 to.setAttribute(nohyphen ? i.replace(/-/g, '_') : i, attr[i]);
@@ -133,6 +135,7 @@ window.Socialite = (function(window, document, undefined)
          */
         createIframe: function(src, instance)
         {
+            // Socialite v2 has slashed the amount of manual iframe creation, we should aim to avoid this entirely
             var iframe = document.createElement('iframe');
             iframe.style.cssText = 'overflow: hidden; border: none;';
             socialite.extendObject(iframe, { src: src, allowtransparency: 'true', frameborder: '0', scrolling: 'no' }, true);
@@ -161,9 +164,14 @@ window.Socialite = (function(window, document, undefined)
          */
         appendNetwork: function(network)
         {
+            // the activation process is getting a little confusing for some networks
+            // it would appear a script load event does not mean its global object exists yet
+            // therefore the first call to `activateAll` may have no effect whereas the second call does, e.g. via `window.twttr.ready`
+
             if (!network || network.appended) {
                 return;
             }
+            // `network.append` and `network.onload` can cancel progress
             if (typeof network.append === 'function' && network.append(network) === false) {
                 network.appended = network.loaded = true;
                 socialite.activateAll(network);
@@ -204,10 +212,10 @@ window.Socialite = (function(window, document, undefined)
 
         /**
          * Remove and re-append network script to the document
-         * This is a last-ditch effort for half-baked scripts
          */
         reloadNetwork: function(name)
         {
+            // This is a last-ditch effort for half-baked scripts
             var network = networks[name];
             if (network && socialite.removeNetwork(network)) {
                 socialite.appendNetwork(network);
@@ -250,6 +258,7 @@ window.Socialite = (function(window, document, undefined)
             instance.el = document.createElement('div');
             instance.el.className = el.className;
             socialite.copyDataAttributes(el, instance.el);
+            // stop over-zealous scripts from activating all instances
             if (el.nodeName.toLowerCase() === 'a' && !el.getAttribute('data-default-href')) {
                 instance.el.setAttribute('data-default-href', el.getAttribute('href'));
             }
