@@ -494,7 +494,7 @@ window.Socialite = (function(window, document, undefined)
         append: function(network)
         {
             var fb       = document.createElement('div'),
-                settings = Socialite.settings['facebook'],
+                settings = Socialite.settings.facebook,
                 events   = { onlike: 'edge.create', onunlike: 'edge.remove', onsend: 'message.send' };
             fb.id = 'fb-root';
             document.body.appendChild(fb);
@@ -541,7 +541,7 @@ window.Socialite = (function(window, document, undefined)
         append: function()
         {
             var notwttr  = (typeof window.twttr !== 'object'),
-                settings = Socialite.settings['twitter'],
+                settings = Socialite.settings.twitter,
                 events   = ['click', 'tweet', 'retweet', 'favorite', 'follow'];
             if (notwttr) {
                 window.twttr = (t = { _e: [], ready: function(f) { t._e.push(f); } });
@@ -566,7 +566,7 @@ window.Socialite = (function(window, document, undefined)
         el.className = instance.widget.name + '-button';
         Socialite.copyDataAttributes(instance.el, el);
         el.setAttribute('href', instance.el.getAttribute('data-default-href'));
-        el.setAttribute('data-lang', instance.el.getAttribute('data-lang') || Socialite.settings['twitter'].lang);
+        el.setAttribute('data-lang', instance.el.getAttribute('data-lang') || Socialite.settings.twitter.lang);
         instance.el.appendChild(el);
     };
 
@@ -587,7 +587,7 @@ window.Socialite = (function(window, document, undefined)
         {
             instance.innerEl = instance.el;
             if (!instance.innerEl.getAttribute('data-lang')) {
-                instance.innerEl.setAttribute('data-lang', Socialite.settings['twitter'].lang);
+                instance.innerEl.setAttribute('data-lang', Socialite.settings.twitter.lang);
             }
             instance.el = document.createElement('div');
             instance.el.className = instance.innerEl.className;
@@ -617,7 +617,7 @@ window.Socialite = (function(window, document, undefined)
                 return false;
             }
             window.___gcfg = {
-                lang: Socialite.settings['googleplus'].lang,
+                lang: Socialite.settings.googleplus.lang,
                 parsetags: 'explicit'
             };
         }
@@ -641,7 +641,7 @@ window.Socialite = (function(window, document, undefined)
     {
         var type = instance.widget.gtype;
         if (window.gapi && window.gapi[type]) {
-            var settings = Socialite.settings['googleplus'],
+            var settings = Socialite.settings.googleplus,
                 params   = Socialite.getDataAttributes(instance.el, true, true),
                 events   = ['onstartinteraction', 'onendinteraction', 'callback'];
             for (var i = 0; i < events.length; i++) {
