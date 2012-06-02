@@ -311,6 +311,8 @@ window.Socialite = (function(window, document, undefined)
                 return;
             }
 
+            var i;
+
             // if array of elements load each one individually
             if (/Array/.test(Object.prototype.toString.call(el))) {
                 for (i = 0; i < el.length; i++) {
@@ -325,7 +327,6 @@ window.Socialite = (function(window, document, undefined)
             }
 
             // if widget name not specified search within the element classes
-            var i;
             if (!w || !widgets[w]) {
                 w = null;
                 var classes = el.className.split(' ');
