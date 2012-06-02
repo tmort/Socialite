@@ -16,7 +16,7 @@ Please be aware that class names used by Socialite have changed since <a href="h
 
 ## Using Socialite
 
-Create an element with the class `socialite` and a class like `twitter-share` to specify the social network and type of widget. Best practice is to provide an accessible fallback URL like the example below. You can style it however you like! See [http://socialitejs.com](http://socialitejs.com) for demos.
+Create an element with the class `socialite` and a class like `twitter-share` to specify the social network and type of widget. Best practice is to provide an accessible fallback URL like the example below. Style it however you like, though avoid using `overflow: hidden` in CSS as it will crop overlays. See [http://socialitejs.com](http://socialitejs.com) for demos.
 
 	<a class="socialite twitter-share" href="http://twitter.com/share" data-url="http://socialitejs.com">
 		Share on Twitter
@@ -24,7 +24,7 @@ Create an element with the class `socialite` and a class like `twitter-share` to
 
 Use `data-*` attributes to configure your button. These configurations directly correlate to the individual network implementations, so while Twitter uses `data-url`, Facebook uses `data-href`. Not ideal but I'd rather keep this script very small!
 
-Supported network are currently:
+Supported widgets are currently:
 
 * Facebook: `facebook-like`
 * Twitter: `twitter-share`, `twitter-follow`, `twitter-mention`, `twitter-hashtag` and `twitter-embed` (for individual tweets)
@@ -33,17 +33,17 @@ Supported network are currently:
 * Pinterest: `pinterest-pinit`
 * Spotify: `spotify-play`
 
-For all individual button configurations visit [Twitter](https://twitter.com/about/resources/buttons/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/), [LinkedIn](http://developer.linkedin.com/plugins/share-button/), [Pinterest](http://pinterest.com/about/goodies/), and [Spotify](https://developer.spotify.com/technologies/spotify-play-button/). **Important:** don't include the scripts provided by these networks, Socialite does that for you! Include **socialite.js** right at the end of your document and activate with the options below.
+For all individual button configurations visit [Twitter](https://twitter.com/about/resources/buttons/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/), [LinkedIn](http://developer.linkedin.com/plugins/share-button/), [Pinterest](http://pinterest.com/about/goodies/), and [Spotify](https://developer.spotify.com/technologies/spotify-play-button/). **Important:** don't include the scripts provided by these networks, Socialite does that for you! Include socialite.js right at the end of your document and activate with the options below.
 
 ***Please note:*** you can easily edit socialite.js to remove the social networks you don't need.
 
-## Functions
+## Making it Work
 
 ### Load
 
 	Socialite.load();
 
-`load` will search the document for elements with the class `socialite` and magically transform them into sharing buttons (based on a network class and data-* attributes).
+The main Socialite function. `load` will search the document for elements with the class `socialite` and magically transform them into sharing buttons (based on a network class and data-* attributes).
 
 Always wait for at least the `DOMContentLoaded` event — `$(document).ready(function() { });` with jQuery.
 
@@ -53,15 +53,15 @@ Be kind! Provide a scope to search within using `context` (a containing element)
 
 ### Activate
 
-	Socialite.activate(element, 'network');
+	Socialite.activate(element, 'widget');
 
-`activate` replaces a single element (or an array of) with the specific social network button.
+`activate` replaces a single element (or an array of) with the specific social widget.
 
 ### Process (optional)
 
 	Socialite.process();
 
-Run `process` only once when the document has loaded to prepare all Socialite instances. This may be necessary to avoid conflicts when multiple or unsupported network widgets exist on the page (e.g. Pinterest buttons). Note that `process` removes all fallback content for some widgets. This optional will be implemented more intelligently in future versions of Socialite.
+Run `process` only once when the document has loaded to prepare all Socialite instances. This may be necessary to avoid conflicts when multiple or unsupported widgets exist on the page (e.g. Pinterest buttons). Note that `process` removes all fallback content for some widgets. *This optional will be implemented more intelligently in future versions of Socialite*.
 
 ### Setup (optional)
 
@@ -94,7 +94,7 @@ See Facebook's documentation on [Internationalization](http://developers.faceboo
 			ontweet    : function(e) { /* ... */ },
 			onretweet  : function(e) { /* ... */ },
 			onfavorite : function(e) { /* ... */ },
-			onfollow   : function(e) { /* ... */ },
+			onfollow   : function(e) { /* ... */ }
 		}
 	});
 
@@ -106,7 +106,7 @@ Twitter share buttons can override the global language setting with a `data-lang
 
 	Socialite.setup({
 		googleplus: {
-			lang       : 'en-GB',
+			lang               : 'en-GB',
 			onstartinteraction : function(e) { /* ... */ },
 			onendinteraction   : function(e) { /* ... */ },
 			callback           : function(e) { /* ... */ }
@@ -119,14 +119,13 @@ See Google's documentation for support on [Events](https://developers.google.com
 
 Send me feedback and testing issues!
 
-The main core of Socialite is built for extensibility. It's basically a fancy script loader specifically for social widgets. They can be stripped out easily if not used and new ones added:
+The main core of Socialite is built for extensibility. It's basically a fancy script loader designed for social widgets. They can be stripped out easily if not used and new ones added:
 
 	Socialite.network('network', params);
 	Socialite.widget('network', 'widget', params);
 
-With these two functions you can add more social networks and widgets! See the source code for examples (more guides to come here). I'm always working on support and settings for more networks, check back frequently!
-
+With these two functions you can add extended support. See the source code for examples (more guides to come here). I'm always working on support and settings for more networks, check back frequently!
 
 Thanks,
 
-@dbushell
+[@dbushell](http://twitter.com/dbushell/)
