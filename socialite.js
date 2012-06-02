@@ -500,13 +500,13 @@ window.Socialite = (function(window, document, undefined)
             document.body.appendChild(fb);
             network.script.src = network.script.src.replace('{{language}}', settings.lang);
             window.fbAsyncInit = function() {
-                FB.init({
+                window.FB.init({
                       appId: settings.appId,
                       xfbml: true
                 });
                 for (var e in events) {
                     if (typeof settings[e] === 'function') {
-                        FB.Event.subscribe(events[e], settings[e]);
+                        window.FB.Event.subscribe(events[e], settings[e]);
                     }
                 }
             };
