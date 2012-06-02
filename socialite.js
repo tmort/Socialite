@@ -1,457 +1,749 @@
 /*!
- * Socialite v1.0
+ * Socialite v2.0
  * http://socialitejs.com
  * Copyright (c) 2011 David Bushell
  * Dual-licensed under the BSD or MIT licenses: http://socialitejs.com/license.txt
  */
-
 window.Socialite = (function(window, document, undefined)
 {
-	var	Socialite = { },
+    'use strict';
 
-		// internal functions
-		_socialite = { },
-		// social networks and callback functions to initialise each instance
-		networks = { },
-		// remembers which scripts have been appended
-		appended = { },
-		// a collection of URLs for external scripts
-		sources = { },
-		// remember loaded scripts
-		loaded = { },
-		// all Socialite button instances
-		cache = { },
+    var uid       = 0,
+        instances = [ ],
+        networks  = { },
+        widgets   = { },
+        rstate    = /^($|ready|complete)/,
+        euc       = window.encodeURIComponent;
 
-		sto = window.setTimeout,
-		euc = encodeURIComponent,
-		gcn = typeof document.getElementsByClassName === 'function';
+    var socialite = {
 
-	// append a known script element once
-	_socialite.appendScript = function(network, id, callback)
-	{
-		if (appended[network] || sources[network] === undefined) {
-			return false;
-		}
+        settings: { },
 
-		var js = appended[network] = document.createElement('script');
-		js.async = true;
-		js.src = sources[network];
-		js.onload = js.onreadystatechange = function ()
-		{
-			if (_socialite.hasLoaded(network)) {
-				return;
-			}
-			var rs = js.readyState;
-			if ( ! rs || rs === 'loaded' || rs === 'complete') {
-				loaded[network] = true;
-				js.onload = js.onreadystatechange = null;
-				// activate all instances from cache if no callback is defined
-				if (callback !== undefined) {
-					if (typeof callback === 'function') {
-						callback();
-					}
-				} else {
-					_socialite.activateCache(network);
-				}
-			}
-		};
+        hasClass: function(el, cn)
+        {
+            return (' ' + el.className + ' ').indexOf(' ' + cn + ' ') !== -1;
+        },
 
-		if (id) {
-			js.id = id;
-		}
+        addClass: function(el, cn)
+        {
+            if (!socialite.hasClass(el, cn)) {
+                el.className = (el.className === '') ? cn : el.className + ' ' + cn;
+            }
+        },
 
-		document.body.appendChild(js);
-		return true;
-	};
+        removeClass: function(el, cn)
+        {
+            el.className = (' ' + el.className + ' ').replace(' ' + cn + ' ', '');
+        },
 
-	// check if an appended script has loaded
-	_socialite.hasLoaded = function(network)
-	{
-		return (typeof network !== 'string') ? false : loaded[network] === true;
-	};
+        /**
+         * Copy properties of one object to another
+         */
+        extendObject: function(to, from, overwrite)
+        {
+            for (var prop in from) {
+                var hasProp = to[prop] !== undefined;
+                if (hasProp && typeof from[prop] === 'object') {
+                    socialite.extendObject(to[prop], from[prop], overwrite);
+                } else if (overwrite || !hasProp) {
+                    to[prop] = from[prop];
+                }
+            }
+        },
 
-	// remove an appended script
-	_socialite.removeScript = function(network) {
-		if ( ! _socialite.hasLoaded(network)) {
-			return false;
-		}
-		document.body.removeChild(appended[network]);
-		appended[network] = loaded[network] = false;
-		return true;
-	};
+        /**
+         * Return elements with a specific class
+         *
+         * @param context - containing element to search within
+         * @param cn      - class name to search for
+         *
+         */
+        getElements: function(context, cn)
+        {
+            // copy to a new array to avoid a live NodeList
+            var i   = 0,
+                el  = [ ],
+                gcn = !!context.getElementsByClassName,
+                all = gcn ? context.getElementsByClassName(cn) : context.getElementsByTagName('*');
+            for (; i < all.length; i++) {
+                if (gcn || socialite.hasClass(all[i], cn)) {
+                    el.push(all[i]);
+                }
+            }
+            return el;
+        },
 
-	// return an iframe element and activate the instance on load
-	_socialite.createIframe = function(src, instance)
-	{
-		var iframe = document.createElement('iframe');
-		iframe.style.cssText = 'overflow: hidden; border: none;';
-		iframe.setAttribute('allowtransparency', 'true');
-		iframe.setAttribute('frameborder', '0');
-		iframe.setAttribute('scrolling', 'no');
-		iframe.setAttribute('src', src);
-		if (instance !== undefined) {
-			iframe.onload = iframe.onreadystatechange = function ()
-			{
-				var rs = iframe.readyState;
-				if ( ! rs || rs === 'loaded' || rs === 'complete') {
-					iframe.onload = iframe.onreadystatechange = null;
-					_socialite.activateInstance(instance);
-				}
-			};
-		}
-		return iframe;
-	};
+        /**
+         * Return data-* attributes of element as a query string (or object)
+         *
+         * @param el       - the element
+         * @param noprefix - (optional) if true, remove "data-" from attribute names
+         * @param nostr    - (optional) if true, return attributes in an object
+         *
+         */
+        getDataAttributes: function(el, noprefix, nostr)
+        {
+            var i    = 0,
+                str  = '',
+                obj  = { },
+                attr = el.attributes;
+            for (; i < attr.length; i++) {
+                var key = attr[i].name,
+                    val = attr[i].value;
+                if (val.length && key.indexOf('data-') === 0) {
+                    if (noprefix) {
+                        key = key.substring(5);
+                    }
+                    if (nostr) {
+                        obj[key] = val;
+                    } else {
+                        str += euc(key) + '=' + euc(val) + '&';
+                    }
+                }
+            }
+            return nostr ? obj : str;
+        },
 
-	// called once an instance is ready to display
-	_socialite.activateInstance = function(instance)
-	{
-		if (instance.loaded) {
-			return;
-		}
-		instance.loaded = true;
-		instance.container.className += ' socialite-loaded';
-	};
+        /**
+         * Copy data-* attributes from one element to another
+         *
+         * @param from     - element to copy from
+         * @param to       - element to copy to
+         * @param noprefix - (optional) if true, remove "data-" from attribute names
+         * @param nohyphen - (optional) if true, convert hyphens to underscores in the attribute names
+         *
+         */
+        copyDataAttributes: function(from, to, noprefix, nohyphen)
+        {
+            // `nohyphen` was needed for Facebook's <fb:like> elements - remove as no longer used?
+            var attr = socialite.getDataAttributes(from, noprefix, true);
+            for (var i in attr) {
+                to.setAttribute(nohyphen ? i.replace(/-/g, '_') : i, attr[i]);
+            }
+        },
 
-	// activate all instances waiting in the cache
-	_socialite.activateCache = function(network)
-	{
-		if (cache[network] !== undefined) {
-			for (var i = 0; i < cache[network].length; i++) {
-				_socialite.activateInstance(cache[network][i]);
-			}
-		}
-	};
+        /**
+         * Create iframe element
+         *
+         * @param src      - iframe URL (src attribute)
+         * @param instance - (optional) socialite instance to activate on iframe load
+         *
+         */
+        createIframe: function(src, instance)
+        {
+            // Socialite v2 has slashed the amount of manual iframe creation, we should aim to avoid this entirely
+            var iframe = document.createElement('iframe');
+            iframe.style.cssText = 'overflow: hidden; border: none;';
+            socialite.extendObject(iframe, { src: src, allowtransparency: 'true', frameborder: '0', scrolling: 'no' }, true);
+            if (instance) {
+                iframe.onload = iframe.onreadystatechange = function ()
+                {
+                    if (rstate.test(iframe.readyState || '')) {
+                        iframe.onload = iframe.onreadystatechange = null;
+                        socialite.activateInstance(instance);
+                    }
+                };
+            }
+            return iframe;
+        },
 
-	// copy data-* attributes from one element to another
-	_socialite.copyDataAttributes = function(from, to)
-	{
-		var i, attr = from.attributes;
-		for (i = 0; i < attr.length; i++) {
-			var key = attr[i].name,
-				val = attr[i].value;
-			if (key.indexOf('data-') === 0 && val.length) {
-				to.setAttribute(key, val);
-			}
-		}
-	};
+        /**
+         * Returns true if network script has loaded
+         */
+        networkReady: function(name)
+        {
+            return networks[name] ? networks[name].loaded : undefined;
+        },
 
-	// return data-* attributes from an element as a query string or object
-	_socialite.getDataAttributes = function(from, noprefix, nostr)
-	{
-		var i, str = '', obj = {}, attr = from.attributes;
-		for (i = 0; i < attr.length; i++) {
-			var key = attr[i].name,
-				val = attr[i].value;
-			if (key.indexOf('data-') === 0 && val.length) {
-				if (noprefix === true) {
-					key = key.substring(5);
-				}
-				if (nostr) {
-					obj[key] = val;
-				} else {
-					str += euc(key) + '=' + euc(val) + '&';
-				}
-			}
-		}
-		return nostr ? obj : str;
-	};
+        /**
+         * Append network script to the document
+         */
+        appendNetwork: function(network)
+        {
+            // the activation process is getting a little confusing for some networks
+            // it would appear a script load event does not mean its global object exists yet
+            // therefore the first call to `activateAll` may have no effect whereas the second call does, e.g. via `window.twttr.ready`
 
-	// get elements within context with a class name (with fallback for IE < 9)
-	_socialite.getElements = function(context, name)
-	{
-		if (gcn) {
-			return context.getElementsByClassName(name);
-		}
-		var i = 0, elems = [], all = context.getElementsByTagName('*'), len = all.length;
-		for (i = 0; i < len; i++) {
-			var cname = ' ' + all[i].className + ' ';
-			if (cname.indexOf(' ' + name + ' ') !== -1) {
-				elems.push(all[i]);
-			}
-		}
-		return elems;
-	};
+            if (!network || network.appended) {
+                return;
+            }
+            // `network.append` and `network.onload` can cancel progress
+            if (typeof network.append === 'function' && network.append(network) === false) {
+                network.appended = network.loaded = true;
+                socialite.activateAll(network);
+                return;
+            }
 
-	// load a single button
-	Socialite.activate = function(elem, network)
-	{
-		Socialite.load(null, elem, network);
-	};
+            if (network.script) {
+                network.el = document.createElement('script');
+                socialite.extendObject(network.el, network.script, true);
+                network.el.async = true;
+                network.el.onload = network.el.onreadystatechange = function()
+                {
+                    if (rstate.test(network.el.readyState || '')) {
+                        network.el.onload = network.el.onreadystatechange = null;
+                        network.loaded = true;
+                        if (typeof network.onload === 'function' && network.onload(network) === false) {
+                            return;
+                        }
+                        socialite.activateAll(network);
+                    }
+                };
+                document.body.appendChild(network.el);
+            }
+            network.appended = true;
+        },
 
-	// load and initialise buttons (recursively)
-	Socialite.load = function(context, elem, network)
-	{
-		// if no context use the document
-		context = (typeof context === 'object' && context !== null && context.nodeType === 1) ? context : document;
+        /**
+         * Remove network script from the document
+         */
+        removeNetwork: function(network)
+        {
+            if (!socialite.networkReady(network.name)) {
+                return false;
+            }
+            network.el.parentNode.removeChild(network.el);
+            return !(network.appended = network.loaded = false);
+        },
 
-		// if no element then search the context for instances
-		if (elem === undefined || elem === null) {
-			var	find = _socialite.getElements(context, 'socialite'),
-				elems = find,
-				length = find.length;
+        /**
+         * Remove and re-append network script to the document
+         */
+        reloadNetwork: function(name)
+        {
+            // This is a last-ditch effort for half-baked scripts
+            var network = networks[name];
+            if (network && socialite.removeNetwork(network)) {
+                socialite.appendNetwork(network);
+            }
+        },
 
-			if (!length) {
-				return;
-			}
-			// create a new array if we're dealing with a live NodeList
-			if (typeof elems.item !== undefined) {
-				elems = [];
-				for (var i = 0; i < length; i++) {
-					elems[i] = find[i];
-				}
-			}
-			Socialite.load(context, elems, network);
-			return;
-		}
+        /**
+         * Create new Socialite instance
+         *
+         * @param el     - parent element that will hold the new instance
+         * @param widget - widget the instance belongs to
+         *
+         */
+        createInstance: function(el, widget)
+        {
+            var proceed  = true,
+                instance = {
+                    el      : el,
+                    uid     : uid++,
+                    widget  : widget
+                };
+            instances.push(instance);
+            if (widget.process !== undefined) {
+                proceed = (typeof widget.process === 'function') ? widget.process(instance) : false;
+            }
+            if (proceed) {
+                socialite.processInstance(instance);
+            }
+            instance.el.setAttribute('data-socialite', instance.uid);
+            instance.el.className = 'socialite ' + widget.name + ' socialite-instance';
+            return instance;
+        },
 
-		// if an array of elements load individually
-		if (typeof elem === 'object' && elem.length) {
-			for (var j = 0; j < elem.length; j++) {
-				Socialite.load(context, elem[j], network);
-			}
-			return;
-		}
+        /**
+         * Process a socialite instance to an intermediate state prior to load
+         */
+        processInstance: function(instance)
+        {
+            var el = instance.el;
+            instance.el = document.createElement('div');
+            instance.el.className = el.className;
+            socialite.copyDataAttributes(el, instance.el);
+            // stop over-zealous scripts from activating all instances
+            if (el.nodeName.toLowerCase() === 'a' && !el.getAttribute('data-default-href')) {
+                instance.el.setAttribute('data-default-href', el.getAttribute('href'));
+            }
+            var parent = el.parentNode;
+            parent.insertBefore(instance.el, el);
+            parent.removeChild(el);
+        },
 
-		// Not an element? Get outa here!
-		if (typeof elem !== 'object' || elem.nodeType !== 1) {
-			return;
-		}
+        /**
+         * Activate a socialite instance
+         */
+        activateInstance: function(instance)
+        {
+            if (instance && !instance.loaded) {
+                instance.loaded = true;
+                if (typeof instance.widget.activate === 'function') {
+                    instance.widget.activate(instance);
+                }
+                socialite.addClass(instance.el, 'socialite-loaded');
+                return instance.onload ? instance.onload(instance.el) : null;
+            }
+        },
 
-		// if no network is specified or recognised look for one in the class name
-		if (typeof network !== 'string' || networks[network] === undefined) {
-			network = null;
-			var classes = elem.className.split(' ');
-			for (var k = 0; k < classes.length; k++) {
-				if (networks[classes[k]] !== undefined) {
-					network = classes[k];
-					break;
-				}
-			}
-			if (typeof network !== 'string') {
-				return;
-			}
-		}
-		if (typeof networks[network] === 'string') {
-			network = networks[network];
-		}
-		if (typeof networks[network] !== 'function') {
-			return;
-		}
+        /**
+         * Activate all socialite instances belonging to a network
+         */
+        activateAll: function(network)
+        {
+            for (var i = 0; i < instances.length; i++) {
+                if (instances[i].init && instances[i].widget.network === network) {
+                    socialite.activateInstance(instances[i]);
+                }
+            }
+        },
 
-		// create the button elements
-		var	container = document.createElement('div'),
-			button = document.createElement('div');
-			container.className = 'socialised ' + network;
-			button.className = 'socialite-button';
+        /**
+         * Load socialite instances
+         *
+         * @param context - (optional) containing element to search within
+         * @param el      - (optional) individual or an array of elements to load
+         * @param w       - (optional) widget name
+         * @param onload  - (optional) function to call after each socialite instance has loaded
+         * @param process - (optional) process but don't load network (if true)
+         *
+         */
+        load: function(context, el, w, onload, process)
+        {
+            // use document as context if unspecified
+            context = (context && typeof context === 'object' && context.nodeType === 1) ? context : document;
 
-		// insert container before parent element, or append to the context
-		var parent = elem.parentNode;
-		if (parent === null) {
-			parent = (context === document) ? document.body : context;
-			parent.appendChild(container);
-		} else {
-			parent.insertBefore(container, elem);
-		}
+            // if no elements search within the context and recurse
+            if (!el || typeof el !== 'object') {
+                socialite.load(context, socialite.getElements(context, 'socialite'), w, onload, process);
+                return;
+            }
 
-		// insert button and element into container
-		container.appendChild(button);
-		button.appendChild(elem);
+            // if array of elements load each one individually
+            if (/Array/.test(Object.prototype.toString.call(el))) {
+                for (i = 0; i < el.length; i++) {
+                    socialite.load(context, el[i], w, onload, process);
+                }
+                return;
+            }
 
-		// hide element from future loading
-		elem.className = elem.className.replace(/\bsocialite\b/, '');
+            // nothing was found...
+            if (el.nodeType !== 1) {
+                return;
+            }
 
-		// create the button instance and save it in cache
-		if (cache[network] === undefined) {
-			cache[network] = [];
-		}
-		var instance = {
-			elem: elem,
-			button: button,
-			container: container,
-			parent: parent,
-			loaded: false
-		};
-		cache[network].push(instance);
+            // if widget name not specified search within the element classes
+            var i;
+            if (!w || !widgets[w]) {
+                w = null;
+                var classes = el.className.split(' ');
+                for (i = 0; i < classes.length; i++) {
+                    if (widgets[classes[i]]) {
+                        w = classes[i];
+                        break;
+                    }
+                }
+                if (!w) {
+                    return;
+                }
+            }
 
-		// initialise the button
-		networks[network](instance, _socialite);
-	};
+            // find or create the Socialite instance
+            var instance,
+                widget = widgets[w],
+                sid    = parseInt(el.getAttribute('data-socialite'), 10);
+            if (!isNaN(sid)) {
+                for (i = 0; i < instances.length; i++) {
+                    if (instances[i].uid === sid) {
+                        instance = instances[i];
+                        break;
+                    }
+                }
+            } else {
+                instance = socialite.createInstance(el, widget);
+            }
 
-	// extend the array of supported networks
-	Socialite.extend = function(network, callback, source)
-	{
-		if (typeof network !== 'string' || typeof callback !== 'function') {
-			return false;
-		}
-		// split into an array to map multiple classes to one network
-		network = (network.indexOf(' ') > 0) ? network.split(' ') : [network];
-		if (networks[network[0]] !== undefined) {
-			return false;
-		}
-		for (var i = 1; i < network.length; i++) {
-			networks[network[i]] = network[0];
-		}
-		if (source !== undefined && typeof source === 'string') {
-			sources[network[0]] = source;
-		}
-		networks[network[0]] = callback;
-		return true;
-	};
+            // return if just processing (or no instance found)
+            if (process || !instance) {
+                return;
+            }
 
-	// boom
-	return Socialite;
+            // initialise the instance
+            if (!instance.init) {
+                instance.init = true;
+                instance.onload = (typeof onload === 'function') ? onload : null;
+                widget.init(instance, socialite);
+            }
+
+            // append the parent network (all instances will be activated onload)
+            // or activate immediately if network has already loaded
+            if (!widget.network.appended) {
+                socialite.appendNetwork(widget.network);
+            } else {
+                if (socialite.networkReady(widget.network.name)) {
+                    socialite.activateInstance(instance);
+                }
+            }
+        },
+
+        /**
+         * Load a single element
+         *
+         * @param el     - an individual element
+         * @param w      - (optional) widget for this socialite instance
+         * @param onload - (optional) function to call once each instance has loaded
+         *
+         */
+        activate: function(el, w, onload)
+        {
+            // skip the first few steps
+            window.Socialite.load(null, el, w, onload);
+        },
+
+        /**
+         * Process elements to an intermediate state prior to load
+         *
+         * @param context - containing element to search within
+         * @param el      - (optional) individual or an array of elements to load
+         * @param w       - (optional) widget name
+         *
+         */
+        process: function(context, el, w)
+        {
+            // stop before widget initialises instance
+            window.Socialite.load(context, el, w, null, true);
+        },
+
+        /**
+         * Add a new social network
+         *
+         * @param name   - unique name for network
+         * @param params - additional data and callbacks
+         *
+         */
+        network: function(n, params)
+        {
+            networks[n] = {
+                name     : n,
+                el       : null,
+                appended : false,
+                loaded   : false,
+                widgets  : { }
+            };
+            if (params) {
+                socialite.extendObject(networks[n], params);
+            }
+        },
+
+        /**
+         * Add a new social widget
+         *
+         * @param name   - name of owner network
+         * @param w      - unique name for widget
+         * @param params - additional data and callbacks
+         *
+         */
+        widget: function(n, w, params)
+        {
+            params.name = n + '-' + w;
+            if (!networks[n] || widgets[params.name]) {
+                return;
+            }
+            params.network = networks[n];
+            networks[n].widgets[w] = widgets[params.name] = params;
+        },
+
+        /**
+         * Change the default Socialite settings for each network
+         */
+        setup: function(params)
+        {
+            socialite.extendObject(socialite.settings, params, true);
+        }
+
+    };
+
+    return socialite;
 
 })(window, window.document);
 
 
-/*
+/**
  * Socialite Extensions - Pick 'n' Mix!
- *
  */
-
-(function(window, document, s, undefined)
+(function(window, document, Socialite, undefined)
 {
-	// Twitter
-	// https://twitter.com/about/resources/
-	s.extend('twitter tweet', function(instance, _s)
-	{
-		var instanceElem = instance.elem,
-			cn = ' ' + instanceElem.className + ' ';
-		if (cn.indexOf(' tweet ') !== -1) {
-			instanceElem.className = 'twitter-tweet';
-		} else {
-			var	el = document.createElement('a'),
-				dt = instanceElem.getAttribute('data-type'),
-				tc = ['share', 'follow', 'hashtag', 'mention'],
-				ti = 0;
-			for (var i = 1; i < 4; i++) {
-				if (dt === tc[i] || cn.indexOf(' ' + tc[i] + ' ') !== -1) {
-					ti = i;
-				}
-			}
-			el.className = 'twitter-' + tc[ti] + '-button';
-			if (instanceElem.getAttribute('href') !== undefined) {
-				el.setAttribute('href', instanceElem.href);
-			}
-			_s.copyDataAttributes(instanceElem, el);
-			instance.button.replaceChild(el, instanceElem);
-		}
-		var twttr = window.twttr;
-		if (typeof twttr === 'object' && typeof twttr.widgets === 'object' && typeof twttr.widgets.load === 'function') {
-			twttr.widgets.load();
-			_s.activateInstance(instance);
-		} else {
-			if (_s.hasLoaded('twitter')) {
-				_s.removeScript('twitter');
-			}
-			if (_s.appendScript('twitter', 'twitter-wjs', false)) {
-				window.twttr = {
-					_e: [function() {
-						_s.activateCache('twitter');
-					}]
-				};
-			}
-		}
-	}, '//platform.twitter.com/widgets.js');
 
-	// Google+
-	// https://developers.google.com/+/plugins/+1button/
-	s.extend('googleplus', function(instance, _s)
-	{
-		var instanceElem = instance.elem,
-			el = document.createElement('div');
-		el.className = 'g-plusone';
-		_s.copyDataAttributes(instanceElem, el);
-		instance.button.replaceChild(el, instanceElem);
-		if (typeof window.gapi === 'object' && typeof window.gapi.plusone === 'object' && typeof gapi.plusone.render === 'function') {
-			window.gapi.plusone.render(instance.button, _s.getDataAttributes(el, true, true));
-			_s.activateInstance(instance);
-		} else {
-			if ( ! _s.hasLoaded('googleplus')) {
-				_s.appendScript('googleplus');
-			}
-		}
-	}, '//apis.google.com/js/plusone.js');
+    // default to the Queen's English
+    Socialite.setup({
+        facebook: {
+            lang: 'en_GB',
+            appId: null
+        },
+        twitter: {
+            lang: 'en'
+        },
+        googleplus: {
+            lang: 'en-GB'
+        }
+    });
 
-	// Facebook
-	// http://developers.facebook.com/docs/reference/plugins/like/
-	s.extend('facebook', function(instance, _s)
-	{
-		var instanceElem = instance.elem,
-			el = document.createElement('div'),
-			fbElem = document.getElementById('fb-root');
-		if (!fbElem && !_s.hasLoaded('facebook')) {
-			fbElem = document.createElement('div');
-			fbElem.id = 'fb-root';
-			document.body.appendChild(fbElem);
-			el.className = 'fb-like';
-			_s.copyDataAttributes(instanceElem, el);
-			instance.button.replaceChild(el, instanceElem);
-			_s.appendScript('facebook', 'facebook-jssdk');
-		} else {
-			var src = '//www.facebook.com/plugins/like.php?';
-			src += _s.getDataAttributes(instanceElem, true);
-			var iframe = _s.createIframe(src, instance);
-			instance.button.replaceChild(iframe, instanceElem);
-		}
-	}, '//connect.facebook.net/en_US/all.js#xfbml=1');
 
-	// LinkedIn
-	// http://developer.linkedin.com/plugins/share-button/
-	s.extend('linkedin', function(instance, _s)
-	{
-		var instanceElem = instance.elem,
-			attr = instanceElem.attributes,
-			el = document.createElement('script');
-		el.type = 'IN/Share';
-		_s.copyDataAttributes(instanceElem, el);
-		instance.button.replaceChild(el, instanceElem);
-		if (typeof window.IN === 'object' && typeof window.IN.init === 'function') {
-			window.IN.init();
-			_s.activateInstance(instance);
-		} else {
-			if (!_s.hasLoaded('linkedin')) {
-				_s.appendScript('linkedin');
-			}
-		}
-	}, '//platform.linkedin.com/in.js');
+    // Facebook
+    // http://developers.facebook.com/docs/reference/plugins/like/
+    // http://developers.facebook.com/docs/reference/javascript/FB.init/
 
-	// Pinterest "pin It" Button
-	// http://pinterest.com/about/goodies/
-	s.extend('pinit', function(instance, _s)
-	{
-		var instanceElem = instance.elem,
-			el = document.createElement('a');
-		el.className = 'pin-it-button';
-		if (instanceElem.getAttribute('href') !== undefined) {
-			el.setAttribute('href', instanceElem.href);
-		}
-		var layout = instanceElem.getAttribute('data-count-layout') || 'horizontal';
-		el.setAttribute('count-layout', layout);
-		instance.button.replaceChild(el, instanceElem);
-		if (_s.hasLoaded('pinit')) {
-			_s.removeScript('pinit');
-		}
-		_s.appendScript('pinit');
-	}, '//assets.pinterest.com/js/pinit.js');
+    Socialite.network('facebook', {
+        script: {
+            src : '//connect.facebook.net/{{language}}/all.js',
+            id  : 'facebook-jssdk'
+        },
+        append: function(network)
+        {
+            var fb       = document.createElement('div'),
+                settings = Socialite.settings['facebook'],
+                events   = { onlike: 'edge.create', onunlike: 'edge.remove', onsend: 'message.send' };
+            fb.id = 'fb-root';
+            document.body.appendChild(fb);
+            network.script.src = network.script.src.replace('{{language}}', settings.lang);
+            window.fbAsyncInit = function() {
+                FB.init({
+                      appId: settings.appId,
+                      xfbml: true
+                });
+                for (var e in events) {
+                    if (typeof settings[e] === 'function') {
+                        FB.Event.subscribe(events[e], settings[e]);
+                    }
+                }
+            };
+        }
+    });
 
-	// Spotify Play Button
-	// https://developer.spotify.com/technologies/spotify-play-button/
-	s.extend('spotify-play', function(instance, _s)
-	{
-		var instanceElem = instance.elem,
-			src = 'https://embed.spotify.com/?',
-			width = parseInt(instanceElem.getAttribute('data-width'), 10),
-			height = parseInt(instanceElem.getAttribute('data-height'), 10);
-		instanceElem.removeAttribute('data-width');
-		instanceElem.removeAttribute('data-height');
-		src += 'uri=' + instanceElem.getAttribute('href') + '&';
-		src += _s.getDataAttributes(instanceElem, true);
-		var iframe = _s.createIframe(src, instance);
-		iframe.style.width = (isNaN(width) ? 300 : width) + 'px';
-		iframe.style.height = (isNaN(height) ? 380 : height) + 'px';
-		instance.button.replaceChild(iframe, instanceElem);
-		_s.activateInstance(instance);
-	}, '');
+    Socialite.widget('facebook', 'like', {
+        init: function(instance)
+        {
+            var el = document.createElement('div');
+            el.className = 'fb-like';
+            Socialite.copyDataAttributes(instance.el, el);
+            instance.el.appendChild(el);
+            if (window.FB && window.FB.XFBML) {
+                window.FB.XFBML.parse(instance.el);
+            }
+        }
+    });
+
+
+    // Twitter
+    // https://dev.twitter.com/docs/tweet-button/
+    // https://dev.twitter.com/docs/intents/events/
+    // https://developers.google.com/analytics/devguides/collection/gajs/gaTrackingSocial#twitter
+
+    Socialite.network('twitter', {
+        script: {
+            src     : '//platform.twitter.com/widgets.js',
+            id      : 'twitter-wjs',
+            charset : 'utf-8'
+        },
+        append: function()
+        {
+            var notwttr  = (typeof window.twttr !== 'object'),
+                settings = Socialite.settings['twitter'],
+                events   = ['click', 'tweet', 'retweet', 'favorite', 'follow'];
+            if (notwttr) {
+                window.twttr = (t = { _e: [], ready: function(f) { t._e.push(f); } });
+            }
+            window.twttr.ready(function(twttr)
+            {
+                for (var i = 0; i < events.length; i++) {
+                    var e = events[i];
+                    if (typeof settings['on' + e] === 'function') {
+                        twttr.events.bind(e, settings['on' + e]);
+                    }
+                }
+                Socialite.activateAll('twitter');
+            });
+            return notwttr;
+        }
+    });
+
+    var twitterInit = function(instance)
+    {
+        var el = document.createElement('a');
+        el.className = instance.widget.name + '-button';
+        Socialite.copyDataAttributes(instance.el, el);
+        el.setAttribute('href', instance.el.getAttribute('data-default-href'));
+        el.setAttribute('data-lang', instance.el.getAttribute('data-lang') || Socialite.settings['twitter'].lang);
+        instance.el.appendChild(el);
+    };
+
+    var twitterActivate = function(instance)
+    {
+        if (window.twttr && typeof window.twttr.widgets === 'object' && typeof window.twttr.widgets.load === 'function') {
+            window.twttr.widgets.load();
+        }
+    };
+
+    Socialite.widget('twitter', 'share',   { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'follow',  { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'hashtag', { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'mention', { init: twitterInit, activate: twitterActivate });
+
+    Socialite.widget('twitter', 'embed',   {
+        process: function(instance)
+        {
+            instance.innerEl = instance.el;
+            if (!instance.innerEl.getAttribute('data-lang')) {
+                instance.innerEl.setAttribute('data-lang', Socialite.settings['twitter'].lang);
+            }
+            instance.el = document.createElement('div');
+            instance.el.className = instance.innerEl.className;
+            instance.innerEl.className = '';
+            instance.innerEl.parentNode.insertBefore(instance.el, instance.innerEl);
+            instance.el.appendChild(instance.innerEl);
+        },
+        init: function(instance)
+        {
+            instance.innerEl.className = 'twitter-tweet';
+        },
+        activate: twitterActivate
+    });
+
+
+    // Google+
+    // https://developers.google.com/+/plugins/+1button/
+    // Google does not support IE7
+
+    Socialite.network('googleplus', {
+        script: {
+            src: '//apis.google.com/js/plusone.js'
+        },
+        append: function(network)
+        {
+            if (window.gapi) {
+                return false;
+            }
+            window.___gcfg = {
+                lang: Socialite.settings['googleplus'].lang,
+                parsetags: 'explicit'
+            };
+        }
+    });
+
+    var googleplusInit = function(instance)
+    {
+        var el = document.createElement('div');
+        el.className = 'g-' + instance.widget.gtype;
+        Socialite.copyDataAttributes(instance.el, el);
+        instance.el.appendChild(el);
+    };
+
+    var googleplusEvent = function(instance, callback) {
+        return (typeof callback !== 'function') ? null : function(data) {
+            callback(instance.el, data);
+        };
+    };
+
+    var googleplusActivate = function(instance)
+    {
+        var type = instance.widget.gtype;
+        if (window.gapi && window.gapi[type]) {
+            var settings = Socialite.settings['googleplus'],
+                params   = Socialite.getDataAttributes(instance.el, true, true),
+                events   = ['onstartinteraction', 'onendinteraction', 'callback'];
+            for (var i = 0; i < events.length; i++) {
+                params[events[i]] = googleplusEvent(instance, settings[events[i]]);
+            }
+            window.gapi[type].render(instance.el, params);
+        }
+    };
+
+    Socialite.widget('googleplus', 'one',   { init: googleplusInit, activate: googleplusActivate, gtype: 'plusone' });
+    Socialite.widget('googleplus', 'share', { init: googleplusInit, activate: googleplusActivate, gtype: 'plus' });
+
+
+    // LinkedIn
+    // http://developer.linkedin.com/plugins/share-button/
+
+    Socialite.network('linkedin', {
+        script: {
+            src: '//platform.linkedin.com/in.js'
+        }
+    });
+
+    var linkedinInit = function(instance)
+    {
+        var el = document.createElement('script');
+        el.type = 'IN/' + instance.widget.intype;
+        Socialite.copyDataAttributes(instance.el, el);
+        instance.el.appendChild(el);
+        if (typeof window.IN === 'object' && typeof window.IN.parse === 'function') {
+            window.IN.parse(instance.el);
+            Socialite.activateInstance(instance);
+        }
+    };
+
+    Socialite.widget('linkedin', 'share',     { init: linkedinInit, intype: 'Share' });
+    Socialite.widget('linkedin', 'recommend', { init: linkedinInit, intype: 'RecommendProduct' });
+
+
+    // Pinterest "pin It" Button
+    // http://pinterest.com/about/goodies/
+
+    Socialite.network('pinterest', {
+        script: {
+            src: '//assets.pinterest.com/js/pinit.js'
+        }
+    });
+
+    Socialite.widget('pinterest', 'pinit', {
+        process: function(instance)
+        {
+            // Pinterest activates all <a> elements with a href containing share URL
+            // so we have to jump through hoops to protect each instance
+            if (instance.el.nodeName.toLowerCase() !== 'a') {
+                return true;
+            }
+            var id   = 'socialite-instance-' + instance.uid,
+                href = instance.el.getAttribute('href');
+            instance.el.id = id;
+            instance.el.href = '#' + id;
+            instance.el.setAttribute('data-default-href', href);
+            instance.el.setAttribute('onclick', '(function(){window.open("' + href + '")})();');
+        },
+        init: function(instance)
+        {
+            Socialite.processInstance(instance);
+            var el = document.createElement('a');
+            el.className = 'pin-it-button';
+            Socialite.copyDataAttributes(instance.el, el);
+            el.setAttribute('href', instance.el.getAttribute('data-default-href'));
+            el.setAttribute('count-layout', instance.el.getAttribute('data-count-layout') || 'horizontal');
+            instance.el.appendChild(el);
+            if (Socialite.networkReady('pinterest')) {
+                Socialite.reloadNetwork('pinterest');
+            }
+        }
+    });
+
+
+    // Spotify Play Button
+    // https://developer.spotify.com/technologies/spotify-play-button/
+
+    Socialite.network('spotify');
+
+    Socialite.widget('spotify', 'play', {
+        process: null,
+        init: function(instance)
+        {
+            Socialite.processInstance(instance);
+            var src    = 'https://embed.spotify.com/?',
+                width  = parseInt(instance.el.getAttribute('data-width'), 10),
+                height = parseInt(instance.el.getAttribute('data-height'), 10);
+            src += 'uri=' + (instance.el.getAttribute('data-default-href') || instance.el.getAttribute('data-href')) + '&';
+            instance.el.setAttribute('data-href', '');
+            instance.el.setAttribute('data-default-href', '');
+            instance.el.setAttribute('data-socialite', '');
+            src += Socialite.getDataAttributes(instance.el, true);
+            var iframe = Socialite.createIframe(src, instance);
+            iframe.style.width = (isNaN(width) ? 300 : width) + 'px';
+            iframe.style.height = (isNaN(height) ? 380 : height) + 'px';
+            instance.el.appendChild(iframe);
+            Socialite.activateInstance(instance);
+        }
+    });
+
 
 })(window, window.document, window.Socialite);

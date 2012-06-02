@@ -1,4 +1,4 @@
-# Socialite
+# Socialite v2
 
 ### Because if you're selling your soul, you may as well do it asynchronously.
 
@@ -10,46 +10,32 @@ Author: David Bushell [http://dbushell.com](http://dbushell.com/) [@dbushell](ht
 
 Copyright © 2012
 
-## Features and Benefits
+### Changes from Version 1
 
-* No dependencies to use.</li>
-* Loads external resources only when needed.
-* Less than 2kb when minified and compressed.
-* More accessible and styleable defaults/fallbacks.
-* Support for Twitter, Google+, Facebook, LinkedIn, Pinterest, and Spotify.
-* Extensible with other social networks.
-* Mimics native implementation when activated.
-* Supported in all browsers (providing the buttons are).
+Please be aware that class names used by Socialite have changed since <a href="https://github.com/dbushell/Socialite/tags/">version 1</a>. All instances start with the class `socialite`, they gain the class `socialite-instance` once processed, and finally `socialite-loaded` once activated.
 
-## Setup
+## Using Socialite
 
-Create an element with the class `socialite` and a class like `twitter` to specify the social network. Best practice is to provide an accessible fallback URL like the example below. You can style it however you like! See [http://socialitejs.com](http://socialitejs.com) for demos.
+Create an element with the class `socialite` and a class like `twitter-share` to specify the social network and type of widget. Best practice is to provide an accessible fallback URL like the example below. You can style it however you like! See [http://socialitejs.com](http://socialitejs.com) for demos.
 
-	<a class="socialite twitter" href="http://twitter.com/share" data-url="http://socialitejs.com">
+	<a class="socialite twitter-share" href="http://twitter.com/share" data-url="http://socialitejs.com">
 		Share on Twitter
 	</a>
 
 Use `data-*` attributes to configure your button. These configurations directly correlate to the individual network implementations, so while Twitter uses `data-url`, Facebook uses `data-href`. Not ideal but I'd rather keep this script very small!
 
-Supported network classes are currently: `twitter`, `googleplus`, `facebook`, `linkedin`, `pinit`, and `spotify-play`. For other [Twitter buttons](https://twitter.com/about/resources/) add an extra class of either `follow`, `hashtag` or `mention`. For [Embedded Tweets](https://dev.twitter.com/docs/embedded-tweets) copy the `<blockquote>` code provided by Twitter and replace the class attribute with `socialite tweet`.
+Supported network are currently:
 
-For all individual button configurations visit [Twitter](https://twitter.com/about/resources/buttons/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/), [LinkedIn](http://developer.linkedin.com/plugins/share-button/), [Pinterest](http://pinterest.com/about/goodies/), and [Spotify](https://developer.spotify.com/technologies/spotify-play-button/). **Important:** don't include the scripts provided by these networks, Socialite does that for you!
+* Facebook: `facebook-like`
+* Twitter: `twitter-share`, `twitter-follow`, `twitter-mention`, `twitter-hashtag` and `twitter-embed` (for individual tweets)
+* Google+: `googleplus-one`, `googleplus-share`
+* LinkedIn: `linkedin-share`, `linkedin-recommend`
+* Pinterest: `pinterest-pinit`
+* Spotify: `spotify-play`
 
-Include **socialite.js** right at the end of your document (before `</body>`) and activate with the options below.
+For all individual button configurations visit [Twitter](https://twitter.com/about/resources/buttons/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/), [LinkedIn](http://developer.linkedin.com/plugins/share-button/), [Pinterest](http://pinterest.com/about/goodies/), and [Spotify](https://developer.spotify.com/technologies/spotify-play-button/). **Important:** don't include the scripts provided by these networks, Socialite does that for you! Include **socialite.js** right at the end of your document and activate with the options below.
 
 ***Please note:*** you can easily edit socialite.js to remove the social networks you don't need.
-
-### Pinterest
-
-For Pinterest's "Pin it" buttons the `url`, `media` and `description` are appended to the URL query string rather than as `data-*` attributes. The only configuration option is `data-count-layout="horizontal"` (or "vertical").
-
-### Spotify
-
-For the Spotify Play Button simply link to the song or playlist like so:
-
-	<a class="socialite spotify-play" href="http://open.spotify.com/track/2EZ2KXLqs9zdRVVMMz1IsH" data-theme="black" data-width="500" data-height="80" target="_blank" title="Sexy And I Know It">
-		Listen to <em>Sexy And I Know It</em> by <strong>LMFAO</strong> on Spotify
-	</a>
 
 ## Functions
 
@@ -63,7 +49,7 @@ Always wait for at least the `DOMContentLoaded` event — `$(document).ready(fun
 
 	Socialite.load(context);
 
-Be kind! Provide an element to search within using `context` rather than the whole document.
+Be kind! Provide a scope to search within using `context` (a containing element) rather than the whole document.
 
 ### Activate
 
@@ -71,12 +57,76 @@ Be kind! Provide an element to search within using `context` rather than the who
 
 `activate` replaces a single element (or an array of) with the specific social network button.
 
-### Extend
+### Process (optional)
 
-	Socialite.extend('network', function);
+	Socialite.process();
 
-With `extend` you can add more social networks! The `function` is called by `Socialite.load` and `Socialite.activate` to replace the default element with the shiny sharing button.
+Run `process` only once when the document has loaded to prepare all Socialite instances. This may be necessary to avoid conflicts when multiple or unsupported network widgets exist on the page (e.g. Pinterest buttons). Note that `process` removes all fallback content for some widgets. This optional will be implemented more intelligently in future versions of Socialite.
+
+### Setup (optional)
+
+	Socialite.setup({ /* settings */ });
+
+`setup` allows you to specify settings for each network such as localisation (see below for all options).
+
+## Settings
+
+## Facebook
+
+	Socialite.setup({
+		facebook: {
+			lang     : 'en_GB',
+			appId    : 123456789,
+			onlike   : function(url) { /* ... */ },
+			onunlike : function(url) { /* ... */ },
+			onsend   : function(url) { /* ... */ }
+		}
+	});
+
+See Facebook's documentation on [Internationalization](http://developers.facebook.com/docs/internationalization/) for supported language codes.
+
+### Twitter
+
+	Socialite.setup({
+		twitter: {
+			lang       : 'en',
+			onclick    : function(e) { /* ... */ },
+			ontweet    : function(e) { /* ... */ },
+			onretweet  : function(e) { /* ... */ },
+			onfavorite : function(e) { /* ... */ },
+			onfollow   : function(e) { /* ... */ },
+		}
+	});
+
+See Twitter's documentation for support on [Web Intents Javascript Events](https://dev.twitter.com/docs/intents/events) and supported [Languages](https://twitter.com/about/resources/buttons#tweet).
+
+Twitter share buttons can override the global language setting with a `data-lang` attribute.
+
+### Google+
+
+	Socialite.setup({
+		googleplus: {
+			lang       : 'en-GB',
+			onstartinteraction : function(e) { /* ... */ },
+			onendinteraction   : function(e) { /* ... */ },
+			callback           : function(e) { /* ... */ }
+		}
+	});
+
+See Google's documentation for support on [Events](https://developers.google.com/+/plugins/+1button/#plusonetag-parameters) and [Languages](https://developers.google.com/+/plugins/+1button/#available-languages).
 
 ## Contribute
 
 Send me feedback and testing issues!
+
+The main core of Socialite is built for extensibility. It's basically a fancy script loader specifically for social widgets. They can be stripped out easily if not used and new ones added:
+
+	Socialite.network('network', params);
+	Socialite.widget('network', 'widget', params);
+
+With these two functions you can add more social networks and widgets! See the source code for examples (more guides to come here). I'm always working on support and settings for more networks, check back frequently!
+
+
+Thanks,
+
+@dbushell

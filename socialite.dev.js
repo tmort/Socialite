@@ -417,17 +417,17 @@ window.Socialite = (function(window, document, undefined)
          * @param params - additional data and callbacks
          *
          */
-        network: function(name, params)
+        network: function(n, params)
         {
-            networks[name] = {
-                name     : name,
+            networks[n] = {
+                name     : n,
                 el       : null,
                 appended : false,
                 loaded   : false,
                 widgets  : { }
             };
             if (params) {
-                socialite.extendObject(networks[name], params);
+                socialite.extendObject(networks[n], params);
             }
         },
 
@@ -478,7 +478,7 @@ window.Socialite = (function(window, document, undefined)
             appId: null
         },
         twitter: {
-            lang: 'en-GB'
+            lang: 'en'
         },
         googleplus: {
             lang: 'en-GB'
