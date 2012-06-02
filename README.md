@@ -107,9 +107,9 @@ Twitter share buttons can override the global language setting with a `data-lang
 	Socialite.setup({
 		googleplus: {
 			lang               : 'en-GB',
-			onstartinteraction : function(e) { /* ... */ },
-			onendinteraction   : function(e) { /* ... */ },
-			callback           : function(e) { /* ... */ }
+			onstartinteraction : function(el, e) { /* ... */ },
+			onendinteraction   : function(el, e) { /* ... */ },
+			callback           : function(el, e) { /* ... */ }
 		}
 	});
 
