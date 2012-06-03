@@ -460,7 +460,6 @@ window.Socialite = (function(window, document, undefined)
 
 })(window, window.document);
 
-
 /**
  * Socialite Extensions - Pick 'n' Mix!
  */
@@ -748,3 +747,17 @@ window.Socialite = (function(window, document, undefined)
 
 
 })(window, window.document, window.Socialite);
+
+/**
+ * Execute any queued functions (don't enqueue before the document has loaded!)
+ */
+(function() {
+    var s = window._socialite;
+    if (/Array/.test(Object.prototype.toString.call(s))) {
+        for (var i = 0, len = s.length; i < len; i++) {
+            if (typeof s[i] === 'function') {
+                s[i]();
+            }
+        }
+    }
+})();
