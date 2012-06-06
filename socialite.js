@@ -12,7 +12,7 @@ window.Socialite = (function(window, document, undefined)
         instances = [ ],
         networks  = { },
         widgets   = { },
-        rstate    = /^($|complete)/,
+        rstate    = /^($|loaded|complete)/,
         euc       = window.encodeURIComponent;
 
     var socialite = {
@@ -287,8 +287,9 @@ window.Socialite = (function(window, document, undefined)
                 network = networks[network];
             }
             for (var i = 0; i < instances.length; i++) {
-                if (instances[i].init && instances[i].widget.network === network) {
-                    socialite.activateInstance(instances[i]);
+                var instance = instances[i];
+                if (instance.init && instance.widget.network === network) {
+                    socialite.activateInstance(instance);
                 }
             }
         },
