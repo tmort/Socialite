@@ -12,7 +12,7 @@ window.Socialite = (function(window, document, undefined)
         instances = [ ],
         networks  = { },
         widgets   = { },
-        rstate    = /^($|ready|complete)/,
+        rstate    = /^($|complete)/,
         euc       = window.encodeURIComponent;
 
     var socialite = {
@@ -283,6 +283,9 @@ window.Socialite = (function(window, document, undefined)
          */
         activateAll: function(network)
         {
+            if (typeof network === 'string') {
+                network = networks[network];
+            }
             for (var i = 0; i < instances.length; i++) {
                 if (instances[i].init && instances[i].widget.network === network) {
                     socialite.activateInstance(instances[i]);
