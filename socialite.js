@@ -369,7 +369,7 @@ window.Socialite = (function(window, document, undefined)
             if (!instance.init) {
                 instance.init = true;
                 instance.onload = (typeof onload === 'function') ? onload : null;
-                widget.init(instance, socialite);
+                widget.init(instance);
             }
 
             // append the parent network (all instances will be activated onload)
@@ -585,7 +585,7 @@ window.Socialite = (function(window, document, undefined)
     Socialite.widget('twitter', 'hashtag', { init: twitterInit, activate: twitterActivate });
     Socialite.widget('twitter', 'mention', { init: twitterInit, activate: twitterActivate });
 
-    Socialite.widget('twitter', 'embed',   {
+    Socialite.widget('twitter', 'embed', {
         process: function(instance)
         {
             instance.innerEl = instance.el;
