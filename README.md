@@ -12,7 +12,7 @@ Copyright © 2012
 
 ### Changes from Version 1
 
-Please be aware that class names used by Socialite have changed since <a href="https://github.com/dbushell/Socialite/tags/">version 1</a>. All instances start with the class `socialite`, they gain the class `socialite-instance` once processed, and finally `socialite-loaded` once activated.
+Please be aware that class names used by Socialite have changed since <a href="https://github.com/dbushell/Socialite/tags/">version 1</a>. All instances start with the class `socialite`, they gain the class `socialite-instance` once processed, and finally `socialite-loaded` once activated. **Pinterest** and **Spotify** extensions are no longer in the default build of `socialite.js`. See end of this README for full change log.
 
 ## Using Socialite
 
@@ -30,6 +30,9 @@ Supported widgets are currently:
 * Twitter: `twitter-share`, `twitter-follow`, `twitter-mention`, `twitter-hashtag` and `twitter-embed` (for individual tweets)
 * Google+: `googleplus-one`, `googleplus-share`
 * LinkedIn: `linkedin-share`, `linkedin-recommend`
+
+Also available as extensions:
+
 * Pinterest: `pinterest-pinit`
 * Spotify: `spotify-play`
 
@@ -129,3 +132,10 @@ With these two functions you can add extended support. See the source code for e
 Thanks,
 
 [@dbushell](http://twitter.com/dbushell/)
+
+## Change Log
+
+### 2.0.1 - 9th June 2012
+
+* created an `extensions` folder in the repository
+* **Pinterest** and **Spotify** removed from the default `socialite.js` and `socialite.min.js` builds.
