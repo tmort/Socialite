@@ -137,5 +137,7 @@ Thanks,
 
 ### 2.0.1 - 9th June 2012
 
+* added Google+ `googleplus-badge` widget
+* added a Buffer App extension
 * created an `extensions` folder in the repository
 * **Pinterest** and **Spotify** removed from the default `socialite.js` and `socialite.min.js` builds.
