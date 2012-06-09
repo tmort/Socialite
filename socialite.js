@@ -33,7 +33,7 @@ window.Socialite = (function(window, document, undefined)
 
         removeClass: function(el, cn)
         {
-            el.className = (' ' + el.className + ' ').replace(' ' + cn + ' ', '');
+            el.className = (' ' + el.className + ' ').replace(' ' + cn + ' ', ' ');
         },
 
         /**
