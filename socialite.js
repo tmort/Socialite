@@ -694,7 +694,6 @@ window.Socialite = (function(window, document, undefined)
 
     var hackernewsInit = function(instance)
     {
-        console.log('hn-init...')
         var el = document.createElement('a');
         el.className = 'hn-share-button';
         Socialite.copyDataAttributes(instance.el, el);
