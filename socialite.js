@@ -682,7 +682,6 @@ window.Socialite = (function(window, document, undefined)
     Socialite.widget('linkedin', 'share',     { init: linkedinInit, intype: 'Share' });
     Socialite.widget('linkedin', 'recommend', { init: linkedinInit, intype: 'RecommendProduct' });
 
-
 })(window, window.document, window.Socialite);
 
 /**
