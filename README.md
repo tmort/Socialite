@@ -136,6 +136,10 @@ Thanks,
 
 ## Change Log
 
+### 2.0.3 - 11th June 2012
+
+* Google+ `window.gapi.render()` now used on inner gplus div to avoid inline styles on the `socialite` element
+
 ### 2.0.2 - 10th June 2012
 
 * Hacker News share widget added by [@igrigorik](https://github.com/igrigorik)
