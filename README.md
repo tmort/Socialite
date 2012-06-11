@@ -28,7 +28,7 @@ Supported widgets are currently:
 
 * Facebook: `facebook-like`
 * Twitter: `twitter-share`, `twitter-follow`, `twitter-mention`, `twitter-hashtag` and `twitter-embed` (for individual tweets)
-* Google+: `googleplus-one`, `googleplus-share`
+* Google+: `googleplus-one`, `googleplus-share`, `googleplus-badge`
 * LinkedIn: `linkedin-share`, `linkedin-recommend`
 
 Also available as extensions:
@@ -36,6 +36,7 @@ Also available as extensions:
 * Pinterest: `pinterest-pinit`
 * Spotify: `spotify-play`
 * Hacker News: `hackernews-share`
+* GitHub: `github-watch`, `github-fork`, `github-follow`
 
 For all individual button configurations visit [Twitter](https://twitter.com/about/resources/buttons/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/), [LinkedIn](http://developer.linkedin.com/plugins/share-button/), [Pinterest](http://pinterest.com/about/goodies/), and [Spotify](https://developer.spotify.com/technologies/spotify-play-button/). **Important:** don't include the scripts provided by these networks, Socialite does that for you! Include socialite.js right at the end of your document and activate with the options below.
 
@@ -138,6 +139,7 @@ Thanks,
 
 ### 2.0.3 - 11th June 2012
 
+* added [GitHub Buttons](http://markdotto.github.com/github-buttons/) extension
 * Google+ `window.gapi.render()` now used on inner gplus div to avoid inline styles on the `socialite` element
 
 ### 2.0.2 - 10th June 2012
