@@ -37,6 +37,7 @@
         el.className = 'g-' + instance.widget.gtype;
         Socialite.copyDataAttributes(instance.el, el);
         instance.el.appendChild(el);
+        instance.gplusEl = el;
     };
 
     var googleplusEvent = function(instance, callback) {
@@ -55,7 +56,7 @@
             for (var i = 0; i < events.length; i++) {
                 params[events[i]] = googleplusEvent(instance, settings[events[i]]);
             }
-            window.gapi[type].render(instance.el, params);
+            window.gapi[type].render(instance.gplusEl, params);
         }
     };
 

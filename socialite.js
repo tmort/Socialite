@@ -632,6 +632,7 @@ window.Socialite = (function(window, document, undefined)
         el.className = 'g-' + instance.widget.gtype;
         Socialite.copyDataAttributes(instance.el, el);
         instance.el.appendChild(el);
+        instance.gplusEl = el;
     };
 
     var googleplusEvent = function(instance, callback) {
@@ -650,12 +651,13 @@ window.Socialite = (function(window, document, undefined)
             for (var i = 0; i < events.length; i++) {
                 params[events[i]] = googleplusEvent(instance, settings[events[i]]);
             }
-            window.gapi[type].render(instance.el, params);
+            window.gapi[type].render(instance.gplusEl, params);
         }
     };
 
     Socialite.widget('googleplus', 'one',   { init: googleplusInit, activate: googleplusActivate, gtype: 'plusone' });
     Socialite.widget('googleplus', 'share', { init: googleplusInit, activate: googleplusActivate, gtype: 'plus' });
+    Socialite.widget('googleplus', 'badge', { init: googleplusInit, activate: googleplusActivate, gtype: 'plus' });
 
 
     // LinkedIn
