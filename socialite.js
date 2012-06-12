@@ -19,6 +19,11 @@ window.Socialite = (function(window, document, undefined)
 
         settings: { },
 
+        trim: function(str)
+        {
+            return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g,'');
+        },
+
         hasClass: function(el, cn)
         {
             return (' ' + el.className + ' ').indexOf(' ' + cn + ' ') !== -1;
@@ -33,7 +38,7 @@ window.Socialite = (function(window, document, undefined)
 
         removeClass: function(el, cn)
         {
-            el.className = (' ' + el.className + ' ').replace(' ' + cn + ' ', ' ');
+            el.className = socialite.trim(' ' + el.className + ' '.replace(' ' + cn + ' ', ' '));
         },
 
         /**
