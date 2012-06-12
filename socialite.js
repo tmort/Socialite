@@ -16,7 +16,10 @@ window.Socialite = (function(window, document, undefined)
         euc       = window.encodeURIComponent;
 
     var socialite = {
-
+        trim: String.prototype.trim
+            ? String.prototype.trim
+            : function () { return this.replace(/^\s+|\s+$/g,''); },
+        
         settings: { },
 
         hasClass: function(el, cn)
@@ -33,7 +36,7 @@ window.Socialite = (function(window, document, undefined)
 
         removeClass: function(el, cn)
         {
-            el.className = (' ' + el.className + ' ').replace(' ' + cn + ' ', ' ');
+            el.className = socialite.trim(' ' + el.className + ' ').replace(' ' + cn + ' ', ' '));
         },
 
         /**
