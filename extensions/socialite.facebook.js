@@ -25,7 +25,13 @@
         {
             var fb       = document.createElement('div'),
                 settings = Socialite.settings.facebook,
-                events   = { onlike: 'edge.create', onunlike: 'edge.remove', onsend: 'message.send' };
+                events   = {
+                    onlike: 'edge.create',
+                    onunlike: 'edge.remove',
+                    onsend: 'message.send' ,
+                    oncomment: 'comment.create',
+                    onuncomment: 'comment.remove'
+                };
             fb.id = 'fb-root';
             document.body.appendChild(fb);
             network.script.src = network.script.src.replace('{{language}}', settings.lang);
