@@ -42,7 +42,7 @@
         instance.el.setAttribute('data-count', !!count);
 
         Socialite.processInstance(instance);
-        var src    = 'http://markdotto.github.com/github-buttons/github-btn.html?' + Socialite.getDataAttributes(instance.el, true);
+        var src    = 'http://ghbtns.com/github-btn.html?' + Socialite.getDataAttributes(instance.el, true);
         var iframe = Socialite.createIframe(src, instance);
         iframe.style.width = data[size][type][count][0] + 'px';
         iframe.style.height = data[size][type][count][1] + 'px';
