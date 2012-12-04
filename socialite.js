@@ -207,7 +207,9 @@ window.Socialite = (function(window, document, undefined)
             if (!socialite.networkReady(network.name)) {
                 return false;
             }
-            network.el.parentNode.removeChild(network.el);
+            if (network.el.parentNode) {
+                network.el.parentNode.removeChild(network.el);
+            }
             return !(network.appended = network.loaded = false);
         },
 
