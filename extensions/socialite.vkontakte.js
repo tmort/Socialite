@@ -69,7 +69,7 @@
                     settings = Socialite.settings.vkontakte;
                 el.className = 'vk-like';
                 // Vkontakte needs explicit element id
-                el.id = 'vkontakte-like-' + (new Date()).getTime();
+                el.id = 'vkontakte-like-' + (new Date()).getTime() + Math.random().toString().replace('.', '-');
                 Socialite.copyDataAttributes(instance.el, el);
                 like = extendConfWithAttributes(instance.el, ['type'], settings.like);
                 instance.el.appendChild(el);
