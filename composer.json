@@ -1,0 +1,40 @@
+{
+    "type": "package",
+    "package": {
+        "name": "components/socialite",
+        "type": "component",
+        "version": "2.0",
+        "dist": {
+            "url": "https://github.com/dbushell/Socialite/archive/v2.0.zip",
+            "type": "zip"
+        },
+        "source": {
+            "url": "https://github.com/dbushell/Socialite.git",
+            "type": "git",
+            "reference": "2.0"
+        },
+        "extra": {
+            "component": {
+                "scripts": [
+                    "socialite.js",
+                    "socialite.min.js",
+                    "extensions/socialite.bufferapp.js",
+                    "extensions/socialite.extension-template.js",
+                    "extensions/socialite.facebook.js",
+                    "extensions/socialite.github.js",
+                    "extensions/socialite.googleplus.js",
+                    "extensions/socialite.hackernews.js",
+                    "extensions/socialite.linkedin.js",
+                    "extensions/socialite.pinterest.js",
+                    "extensions/socialite.spotify.js",
+                    "extensions/socialite.twitter.js",
+                    "extensions/socialite.vkontakte.js",
+                    "extensions/socialite.weibo.js"
+                ]
+            }
+        },
+        "require": {
+            "robloach/component-installer": "*"
+        }
+    }
+}
