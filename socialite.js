@@ -662,10 +662,10 @@ window.Socialite = (function(window, document, undefined)
         }
     };
 
-    Socialite.widget('googleplus', 'one',   { init: googleplusInit, activate: googleplusActivate, gtype: 'plusone' });
-    Socialite.widget('googleplus', 'share', { init: googleplusInit, activate: googleplusActivate, gtype: 'plus' });
-    Socialite.widget('googleplus', 'badge', { init: googleplusInit, activate: googleplusActivate, gtype: 'plus' });
-
+    Socialite.widget('googleplus', 'one',    { init: googleplusInit, activate: googleplusActivate, gtype: 'plusone' });
+    Socialite.widget('googleplus', 'share',  { init: googleplusInit, activate: googleplusActivate, gtype: 'plus' });
+    Socialite.widget('googleplus', 'badge',  { init: googleplusInit, activate: googleplusActivate, gtype: 'plus' });
+    Socialite.widget('googleplus', 'follow', { init: googleplusInit, activate: googleplusActivate, gtype: 'follow' });
 
     // LinkedIn
     // http://developer.linkedin.com/plugins/share-button/
