@@ -1,0 +1,272 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Socialite by tmort</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="demo/demo.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Socialite</h1>
+        <p></p>
+
+        <p class="view"><a href="https://github.com/tmort/Socialite">View the Project on GitHub <small>tmort/Socialite</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/tmort/Socialite/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/tmort/Socialite/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/tmort/Socialite">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="socialite-v2" class="anchor" href="#socialite-v2"><span class="octicon octicon-link"></span></a>Socialite v2</h1>
+
+<h3>
+<a name="because-if-youre-selling-your-soul-you-may-as-well-do-it-asynchronously" class="anchor" href="#because-if-youre-selling-your-soul-you-may-as-well-do-it-asynchronously"><span class="octicon octicon-link"></span></a>Because if you're selling your soul, you may as well do it asynchronously.</h3>
+
+<p>Socialite provides a very easy way to implement and activate a plethora of social sharing buttons — any time you wish. On document load, on article hover, on any event!</p>
+
+<p>Author: David Bushell <a href="http://dbushell.com/">http://dbushell.com</a> <a href="http://twitter.com/dbushell/">@dbushell</a></p>
+<p>Contributor: Tom Morton <a href="http://twmorton.com/">http://twmorton.com</a> <a href="http://twitter.com/tmort/">@tmort</a></p>
+
+<p>Copyright © 2013</p>
+
+<h3>
+<a name="changes-from-version-1" class="anchor" href="#changes-from-version-1"><span class="octicon octicon-link"></span></a>Changes from Version 1</h3>
+
+<p>Please be aware that class names used by Socialite have changed since <a href="https://github.com/dbushell/Socialite/tags/">version 1</a>. All instances start with the class <code>socialite</code>, they gain the class <code>socialite-instance</code> once processed, and finally <code>socialite-loaded</code> once activated. <strong>Pinterest</strong> and <strong>Spotify</strong> extensions are no longer in the default build of <code>socialite.js</code>. See end of this README for full change log.</p>
+
+<h2>
+<a name="demo" class="anchor" href="#demo"><span class="octicon octicon-link"></span></a>Demo</h2>
+<p>Hover over the following social links to load them dynamically. Socialite can be triggered by page scrolling (lazy loading the social links as they are needed) or when the user hovers over an area on the page.</p>
+<div class="demo">
+    <ul class="social-buttons cf">
+        <li><a href="http://twitter.com/share" class="socialite twitter-share" data-text="Socialite.js" data-url="http://socialitejs.com" data-count="vertical" rel="nofollow" target="_blank"><span class="vhidden">Share on Twitter</span></a></li>
+        <li><a href="https://plus.google.com/share?url=http://socialitejs.com" class="socialite googleplus-one" data-size="tall" data-href="http://socialitejs.com" rel="nofollow" target="_blank"><span class="vhidden">Share on Google+</span></a></li>
+        <li><a href="http://www.facebook.com/sharer.php?u=http://www.socialitejs.com&amp;t=Socialite.js" class="socialite facebook-like" data-href="http://socialitejs.com" data-send="false" data-layout="box_count" data-width="60" data-show-faces="false" rel="nofollow" target="_blank"><span class="vhidden">Share on Facebook</span></a></li>
+        <li><a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http://socialitejs.com&amp;title=Socialite.js" class="socialite linkedin-share" data-url="http://socialitejs.com" data-counter="top" rel="nofollow" target="_blank"><span class="vhidden">Share on LinkedIn</span></a></li>
+    </ul>
+</div>
+
+<h2>
+<a name="using-socialite" class="anchor" href="#using-socialite"><span class="octicon octicon-link"></span></a>Using Socialite</h2>
+
+<p>Create an element with the class <code>socialite</code> and a class like <code>twitter-share</code> to specify the social network and type of widget. Best practice is to provide an accessible fallback URL like the example below. Style it however you like, though avoid using <code>overflow: hidden</code> in CSS as it will crop overlays.
+
+<pre><code>&lt;a class="socialite twitter-share" href="http://twitter.com/share" data-url="http://socialitejs.com"&gt;
+    Share on Twitter
+&lt;/a&gt;
+</code></pre>
+
+<p>Use <code>data-*</code> attributes to configure your button. These configurations directly correlate to the individual network implementations, so while Twitter uses <code>data-url</code>, Facebook uses <code>data-href</code>. Not ideal but I'd rather keep this script very small!</p>
+
+<p>Supported widgets are currently:</p>
+
+<ul>
+<li>Facebook: <code>facebook-like</code>
+</li>
+<li>Twitter: <code>twitter-share</code>, <code>twitter-follow</code>, <code>twitter-mention</code>, <code>twitter-hashtag</code> and <code>twitter-embed</code> (for individual tweets)</li>
+<li>Google+: <code>googleplus-one</code>, <code>googleplus-share</code>, <code>googleplus-badge</code>
+</li>
+<li>LinkedIn: <code>linkedin-share</code>, <code>linkedin-recommend</code>
+</li>
+</ul><p>Also available as extensions:</p>
+
+<ul>
+<li>Pinterest: <code>pinterest-pinit</code>
+</li>
+<li>Spotify: <code>spotify-play</code>
+</li>
+<li>Hacker News: <code>hackernews-share</code>
+</li>
+<li>GitHub: <code>github-watch</code>, <code>github-fork</code>, <code>github-follow</code>
+</li>
+</ul><p>For all individual button configurations visit <a href="https://twitter.com/about/resources/buttons/">Twitter</a>, <a href="https://developers.google.com/+/plugins/+1button/">Google+</a>, <a href="http://developers.facebook.com/docs/reference/plugins/like/">Facebook</a>, <a href="http://developer.linkedin.com/plugins/share-button/">LinkedIn</a>, <a href="http://pinterest.com/about/goodies/">Pinterest</a>, and <a href="https://developer.spotify.com/technologies/spotify-play-button/">Spotify</a>. <strong>Important:</strong> don't include the scripts provided by these networks, Socialite does that for you! Include socialite.js right at the end of your document and activate with the options below.</p>
+
+<p><strong><em>Please note:</em></strong> you can easily edit socialite.js to remove the social networks you don't need.</p>
+
+<h2>
+<a name="making-it-work" class="anchor" href="#making-it-work"><span class="octicon octicon-link"></span></a>Making it Work</h2>
+
+<h3>
+<a name="load" class="anchor" href="#load"><span class="octicon octicon-link"></span></a>Load</h3>
+
+<pre><code>Socialite.load();
+</code></pre>
+
+<p>The main Socialite function. <code>load</code> will search the document for elements with the class <code>socialite</code> and magically transform them into sharing buttons (based on a network class and data-* attributes).</p>
+
+<p>Always wait for at least the <code>DOMContentLoaded</code> event — <code>$(document).ready(function() { });</code> with jQuery.</p>
+
+<pre><code>Socialite.load(context);
+</code></pre>
+
+<p>Be kind! Provide a scope to search within using <code>context</code> (a containing element) rather than the whole document.</p>
+
+<h3>
+<a name="activate" class="anchor" href="#activate"><span class="octicon octicon-link"></span></a>Activate</h3>
+
+<pre><code>Socialite.activate(element, 'widget');
+</code></pre>
+
+<p><code>activate</code> replaces a single element (or an array of) with the specific social widget.</p>
+
+<h3>
+<a name="process-optional" class="anchor" href="#process-optional"><span class="octicon octicon-link"></span></a>Process (optional)</h3>
+
+<pre><code>Socialite.process();
+</code></pre>
+
+<p>Run <code>process</code> only once when the document has loaded to prepare all Socialite instances. This may be necessary to avoid conflicts when multiple or unsupported widgets exist on the page (e.g. Pinterest buttons). Note that <code>process</code> removes all fallback content for some widgets. <em>This optional will be implemented more intelligently in future versions of Socialite</em>.</p>
+
+<h3>
+<a name="setup-optional" class="anchor" href="#setup-optional"><span class="octicon octicon-link"></span></a>Setup (optional)</h3>
+
+<pre><code>Socialite.setup({ /* settings */ });
+</code></pre>
+
+<p><code>setup</code> allows you to specify settings for each network such as localisation (see below for all options).</p>
+
+<h2>
+<a name="settings" class="anchor" href="#settings"><span class="octicon octicon-link"></span></a>Settings</h2>
+
+<h2>
+<a name="facebook" class="anchor" href="#facebook"><span class="octicon octicon-link"></span></a>Facebook</h2>
+
+<pre><code>Socialite.setup({
+    facebook: {
+        lang     : 'en_GB',
+        appId    : 123456789,
+        onlike   : function(url) { /* ... */ },
+        onunlike : function(url) { /* ... */ },
+        onsend   : function(url) { /* ... */ }
+    }
+});
+</code></pre>
+
+<p>See Facebook's documentation on <a href="http://developers.facebook.com/docs/internationalization/">Internationalization</a> for supported language codes.</p>
+
+<h3>
+<a name="twitter" class="anchor" href="#twitter"><span class="octicon octicon-link"></span></a>Twitter</h3>
+
+<pre><code>Socialite.setup({
+    twitter: {
+        lang       : 'en',
+        onclick    : function(e) { /* ... */ },
+        ontweet    : function(e) { /* ... */ },
+        onretweet  : function(e) { /* ... */ },
+        onfavorite : function(e) { /* ... */ },
+        onfollow   : function(e) { /* ... */ }
+    }
+});
+</code></pre>
+
+<p>See Twitter's documentation for support on <a href="https://dev.twitter.com/docs/intents/events">Web Intents Javascript Events</a> and supported <a href="https://twitter.com/about/resources/buttons#tweet">Languages</a>.</p>
+
+<p>Twitter share buttons can override the global language setting with a <code>data-lang</code> attribute.</p>
+
+<h3>
+<a name="google" class="anchor" href="#google"><span class="octicon octicon-link"></span></a>Google+</h3>
+
+<pre><code>Socialite.setup({
+    googleplus: {
+        lang               : 'en-GB',
+        onstartinteraction : function(el, e) { /* ... */ },
+        onendinteraction   : function(el, e) { /* ... */ },
+        callback           : function(el, e) { /* ... */ }
+    }
+});
+</code></pre>
+
+<p>See Google's documentation for support on <a href="https://developers.google.com/+/plugins/+1button/#plusonetag-parameters">Events</a> and <a href="https://developers.google.com/+/plugins/+1button/#available-languages">Languages</a>.</p>
+
+<h2>
+<a name="contribute" class="anchor" href="#contribute"><span class="octicon octicon-link"></span></a>Contribute</h2>
+
+<p>Send me feedback and testing issues!</p>
+
+<p>The main core of Socialite is built for extensibility. It's basically a fancy script loader designed for social widgets. They can be stripped out easily if not used and new ones added:</p>
+
+<pre><code>Socialite.network('network', params);
+Socialite.widget('network', 'widget', params);
+</code></pre>
+
+<p>With these two functions you can add extended support. See the source code for examples (more guides to come here). I'm always working on support and settings for more networks, check back frequently!</p>
+
+<h2><a name="wordpressplugin" class="anchor" href="#wordpressplugin"><span class="octicon octicon-link"></span></a>WordPress Plugin</h2>
+<p>Tom Morton <a href="http://twitter.com/tmort/">@tmort</a> has also created a WordPress plugin that packages WPSocialite and makes it a one step installation into your WordPress powered website. Download it from here: <a href="http://wordpress.org/plugins/wpsocialite/">http://wordpress.org/plugins/wpsocialite/</a>.</p>
+
+
+<h2>
+<a name="change-log" class="anchor" href="#change-log"><span class="octicon octicon-link"></span></a>Change Log</h2>
+
+<h3>
+<a name="203---11th-june-2012" class="anchor" href="#203---11th-june-2012"><span class="octicon octicon-link"></span></a>2.0.3 - 11th June 2012</h3>
+
+<ul>
+<li>added <a href="http://markdotto.github.com/github-buttons/">GitHub Buttons</a> extension</li>
+<li>Google+ <code>window.gapi.render()</code> now used on inner gplus div to avoid inline styles on the <code>socialite</code> element</li>
+</ul><h3>
+<a name="202---10th-june-2012" class="anchor" href="#202---10th-june-2012"><span class="octicon octicon-link"></span></a>2.0.2 - 10th June 2012</h3>
+
+<ul>
+<li>Hacker News share widget added by <a href="https://github.com/igrigorik">@igrigorik</a>
+</li>
+</ul><h3>
+<a name="201---9th-june-2012" class="anchor" href="#201---9th-june-2012"><span class="octicon octicon-link"></span></a>2.0.1 - 9th June 2012</h3>
+
+<ul>
+<li>added Google+ <code>googleplus-badge</code> widget</li>
+<li>added a Buffer App extension</li>
+<li>created an <code>extensions</code> folder in the repository</li>
+<li>
+<strong>Pinterest</strong> and <strong>Spotify</strong> removed from the default <code>socialite.js</code> and <code>socialite.min.js</code> builds.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/tmort">tmort</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="http://tmort.github.io/Socialite/socialite.js"></script>
+    <script>
+
+    // Only use jQuery if the website already makes extensive use of it!
+
+    $(document).ready(function()
+    {
+
+        $('.demo').one('mouseenter', function()
+        {
+            Socialite.load($(this)[0]);
+        });
+
+    });
+
+    </script>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-44021317-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
