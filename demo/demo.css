@@ -2,14 +2,6 @@
 * html .cf { zoom: 1; }
 *:first-child+html .cf { zoom: 1; }
 
-body { font-family: 'Helvetica Neue', Arial, sans-serif; padding: 1.25em; font-size: 100%; line-height: 1;  -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
-
-h1 { font-size: 2.5em; line-height: 1.333em; margin: 0 0 0.5em 0; }
-h2 { font-size: 1.25em; line-height: 1.333em; margin: 0.5em 0; }
-
-.text p, .text li { font-size: 1em; line-height: 1.5em; margin: 0 0 0.5em 0; }
-.text li { margin: 0 0 0.25em 0; }
-
 .vhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
 
 /*
