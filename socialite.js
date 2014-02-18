@@ -523,18 +523,19 @@ window.Socialite = (function(window, document, undefined)
         }
     });
 
-    Socialite.widget('facebook', 'like', {
-        init: function(instance)
-        {
-            var el = document.createElement('div');
-            el.className = 'fb-like';
-            Socialite.copyDataAttributes(instance.el, el);
-            instance.el.appendChild(el);
-            if (window.FB && window.FB.XFBML) {
-                window.FB.XFBML.parse(instance.el);
-            }
+    var facebookInit = function(instance)
+    {
+        var el = document.createElement('div');
+        el.className = instance.widget.fbtype;
+        Socialite.copyDataAttributes(instance.el, el);
+        instance.el.appendChild(el);
+        if (window.FB && window.FB.XFBML) {
+            window.FB.XFBML.parse(instance.el);
         }
-    });
+    };
+
+    Socialite.widget('facebook', 'like',   { init: facebookInit, fbtype: 'fb-like' });
+    Socialite.widget('facebook', 'share',  { init: facebookInit, fbtype: 'fb-share-button' });
 
 
     // Twitter
