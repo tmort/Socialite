@@ -1,0 +1,41 @@
+{
+  "name": "socialite-js",
+  "version": "2.0.3",
+  "description": "Socialite provides a very easy way to implement and activate a plethora of social sharing buttons — any time you wish. On document load, on article hover, on any event!",
+  "homepage": "http://socialitejs.com",
+  "authors": [
+    { "name": "David Bushell", "homepage": "http://dbushell.com/", "twitter": "@dbushell" },
+    { "name": "Tom Morton", "homepage": "http://twmorton.com/", "twitter": "@tmort" }
+  ],
+  "license": [ "MIT", "BSD-3-Clause" ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tmort/Socialite.git"
+  },
+  "main": [
+    "socialite.js",
+    "socialite.min.js",
+    "socialite.bufferapp.js",
+    "socialite.facebook.js",
+    "socialite.github.js",
+    "socialite.googleplus.js",
+    "socialite.hackernews.js",
+    "socialite.linkedin.js",
+    "socialite.pinterest.js",
+    "socialite.pocket.js",
+    "socialite.spotify.js",
+    "socialite.twitter.js",
+    "socialite.vkontakte.js",
+    "socialite.weibo.js"
+  ],
+  "keywords": [
+    "socialite",
+    "social",
+    "media",
+    "asynchronous"
+  ],
+  "ignore": [
+    "**/.*",
+    "demo"
+  ]
+}
