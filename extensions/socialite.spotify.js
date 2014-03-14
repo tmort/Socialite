@@ -31,6 +31,8 @@
         }
     });
 
+    // https://developer.spotify.com/technologies/widgets/spotify-follow-button/
+
     Socialite.widget('spotify', 'follow', {
             process: null,
             init: function(instance)
