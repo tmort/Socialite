@@ -39,6 +39,7 @@ Also available as extensions:
 * Spotify: `spotify-play`
 * Hacker News: `hackernews-share`
 * GitHub: `github-watch`, `github-fork`, `github-follow`
+* DZone: `dzone-submit`
 
 For all individual button configurations visit [Twitter](https://twitter.com/about/resources/buttons/), [Google+](https://developers.google.com/+/plugins/+1button/), [Facebook](http://developers.facebook.com/docs/reference/plugins/like/), [LinkedIn](http://developer.linkedin.com/plugins/share-button/), [Pinterest](http://pinterest.com/about/goodies/), and [Spotify](https://developer.spotify.com/technologies/spotify-play-button/). **Important:** don't include the scripts provided by these networks, Socialite does that for you! Include socialite.js right at the end of your document and activate with the options below.
 
