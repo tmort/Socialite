@@ -10,7 +10,7 @@
 
     Socialite.network('bufferapp', {
         script: {
-            src: '//static.bufferapp.com/js/button.js'
+            src: '//d389zggrogs7qo.cloudfront.net/js/button.js'
         }
     });
 
