@@ -10,7 +10,8 @@
 
     Socialite.network('pinterest', {
         script: {
-            src: '//assets.pinterest.com/js/pinit.js'
+            src: '//assets.pinterest.com/js/pinit.js',
+            'data-pin-build': 'parsePinBtns'
         }
     });
 
@@ -39,7 +40,7 @@
             el.setAttribute('count-layout', instance.el.getAttribute('data-count-layout') || 'horizontal');
             instance.el.appendChild(el);
             if (Socialite.networkReady('pinterest')) {
-                Socialite.reloadNetwork('pinterest');
+                window.parsePinBtns();
             }
         }
     });
