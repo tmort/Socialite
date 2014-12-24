@@ -588,10 +588,11 @@ window.Socialite = (function(window, document, undefined)
         }
     };
 
-    Socialite.widget('twitter', 'share',   { init: twitterInit, activate: twitterActivate });
-    Socialite.widget('twitter', 'follow',  { init: twitterInit, activate: twitterActivate });
-    Socialite.widget('twitter', 'hashtag', { init: twitterInit, activate: twitterActivate });
-    Socialite.widget('twitter', 'mention', { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'share',    { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'follow',   { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'hashtag',  { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'mention',  { init: twitterInit, activate: twitterActivate });
+    Socialite.widget('twitter', 'timeline', { init: twitterInit, activate: twitterActivate });
 
     Socialite.widget('twitter', 'embed', {
         process: function(instance)
