@@ -1,6 +1,5 @@
 {
   "name": "socialite-js",
-  "version": "2.0.3",
   "description": "Socialite provides a very easy way to implement and activate a plethora of social sharing buttons — any time you wish. On document load, on article hover, on any event!",
   "homepage": "http://socialitejs.com",
   "authors": [
