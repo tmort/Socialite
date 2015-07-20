@@ -71,7 +71,7 @@
                 // Vkontakte needs explicit element id
                 el.id = 'vkontakte-like-' + (new Date()).getTime() + Math.random().toString().replace('.', '-');
                 Socialite.copyDataAttributes(instance.el, el);
-                like = extendConfWithAttributes(instance.el, ['type', 'height'], settings.like);
+                like = extendConfWithAttributes(instance.el, ['type', 'height', 'verb'], settings.like);
                 instance.el.appendChild(el);
                 VK.Widgets.Like(el.id, like);
             });
