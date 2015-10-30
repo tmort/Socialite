@@ -28,8 +28,8 @@
 
     Socialite.network('vkontakte', {
         script: {
-            src : '//userapi.com/js/api/openapi.js?49',
-            id  : 'vk-jsapi'
+            src: '//userapi.com/js/api/openapi.js?49',
+            id : 'vk-jsapi'
         },
         onload: function(network) {
            var settings = Socialite.settings.vkontakte;
@@ -64,17 +64,23 @@
     Socialite.widget('vkontakte', 'like', {
         init: function(instance)
         {
-            if (typeof window.VK !== 'object') VKCallbacks.push(function(){
+            function initVKLike() {
                 var el       = document.createElement('div'),
                     settings = Socialite.settings.vkontakte;
                 el.className = 'vk-like';
                 // Vkontakte needs explicit element id
                 el.id = 'vkontakte-like-' + (new Date()).getTime() + Math.random().toString().replace('.', '-');
                 Socialite.copyDataAttributes(instance.el, el);
-                like = extendConfWithAttributes(instance.el, ['type'], settings.like);
+                like = extendConfWithAttributes(instance.el, ['type', 'pageUrl', 'height'], settings.like);
                 instance.el.appendChild(el);
                 VK.Widgets.Like(el.id, like);
-            });
+            }
+            
+            if (typeof window.VK !== 'object') { 
+                VKCallbacks.push(initVKLike);
+            } else {
+                initVKLike();
+            }
         }
     });
 
